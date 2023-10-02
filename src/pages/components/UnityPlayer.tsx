@@ -88,7 +88,8 @@ export default function UnityPlayer() {
               className="border-5 mt-5 border-slate-600"
               unityProvider={unityProvider}
               style={{
-                width: width - 400,
+                // calculation to keep container at a 16:9 ratio
+                width: ((height/9)*16)-400,
                 height: height - 200,
                 visibility: isLoaded ? "visible" : "hidden",
               }}
