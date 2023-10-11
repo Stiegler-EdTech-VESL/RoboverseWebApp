@@ -32,52 +32,66 @@ export default function TeamPage() {
   } else {
     return (
       <>
-        <div className="mt-5 flex border-b-2">
-          <div className="ml-28 flex">
-            <Image
-              className="object-contain"
-              alt={team.data.name + "'s Profile Picture"}
-              src={team.data?.logo ?? "/spinner.svg"}
-              width={300}
-              height={300}
-              quality={100}
-            ></Image>
-            <div className="ml-8 mt-16 flex flex-col font-poppins text-3xl text-slate-200">
-              <div>{team.data.name}</div>
-              <div className="text-lg italic text-slate-400">
-                Global Rating:{" "}
+        <div className="flex flex-row items-center place-content-evenly">
+          {/* team logo */}
+          <div className="flex flex-row items-center">
+          <div className="shrink max-w-xs">
+          <Image
+            className="object-contain"
+            alt={team.data.name + "'s Profile Picture"}
+            src={team.data?.logo ?? "/spinner.svg"}
+            width={300}
+            height={300}
+            quality={100}
+          ></Image>
+          </div>
+          {/* team name and stuff */}
+          <div className="">
+            <h1 className="text-2xl text-white font-semibold">{team.data.name}</h1>
+            <div className="flex flex-row space-x-2">
+              <h2 className="italic font-medium text-slate-500">Global Rating:</h2>
+              <p className="slate-200">
                 {typeof parseFloat(String(team.data?.global_ranking)) ===
                 "number"
                   ? (
                       parseFloat(String(team.data?.global_ranking)) * 1000
                     ).toFixed(0)
                   : "Unranked"}
-              </div>
-              <div className="text-lg italic text-slate-400">
-                District Rating:{" "}
+              </p>
+            </div>
+            <div className="flex flex-row space-x-2">
+            <h2 className="italic font-medium text-slate-500">District Rating:</h2>
+              <p>
                 {typeof parseFloat(String(team.data?.district_ranking)) ===
                 "number"
                   ? (
                       parseFloat(String(team.data?.district_ranking)) * 1000
                     ).toFixed(0)
                   : "Unranked"}
-              </div>
-              <div className="text-lg italic text-slate-400">
-                W/L: {team.data?.totalEqMatchesWon} /{" "}
-                {team.data?.totalEqMatchesLost}
-              </div>
+              </p>
+            </div>
+            <div className="flex flex-row space-x-2">
+            <h2 className="italic font-medium text-slate-500">W/L:</h2>
+              <p>
+                {team.data?.totalEqMatchesWon} / {team.data?.totalEqMatchesLost}
+              </p>
             </div>
           </div>
-          <div className="flex grow items-center justify-center pb-20 pr-96 ">
-            <TeamHistory id={team.data.id} />
           </div>
-          <div className="mr-36">
+          {/* graph stat thingie styles from TeamHistory component is fucking with styles here*/}
+
+            <TeamHistory id={team.data.id} />
+
+
+          {/* the thing next to the graph with players */}
+          <div className="">
             <UserListTeam teamID={team.data.id} />
           </div>
         </div>
 
-        <div className="flex items-center justify-center">
-          <div className="mx-20 mt-4 flex-grow self-center  pb-4 text-center  text-3xl text-slate-300">
+        {/* second half of the page */}
+        <div className="">
+          <div className="">
             <EqMatchListTeam teamId={team.data.id} />
           </div>
         </div>
