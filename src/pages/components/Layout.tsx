@@ -23,10 +23,11 @@ const Layout = ({ children }: { children: ReactNode }) => {
         </div>
       </a>
 
-      <div className="overflow-x-hidden overscroll-x-none">
-        {sessionData ? <Navbar /> : <Authenticate />}
-        {sessionData ? children : null}
-      </div>
+      {sessionData ? <Navbar /> : <Authenticate />}
+
+      {sessionData ? children : null}
+
+
     </>
   );
 };
