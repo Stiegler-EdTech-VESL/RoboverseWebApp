@@ -12,7 +12,7 @@ export default function Navbutton(props: {
           props.selected
             ? "border-b-2 border-green-500 text-slate-300"
             : "bg-transparent text-slate-300"
-        } px-5 py-1 ${
+        }  ${
           props.comingSoon ? "text-slate-600" : ""
         } font-poppins text-4xl text-black`}
         href={`${
