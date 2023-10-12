@@ -32,55 +32,55 @@ export default function TeamPage() {
   } else {
     return (
       <>
-        <div className="flex flex-row items-center place-content-evenly">
+        <div className="flex flex-wrap  lg:flex-row justify-between flex-col items-center lg:place-content-evenly py-10">
           {/* team logo */}
-          <div className="flex flex-row items-center">
-          <div className="shrink max-w-xs">
-          <Image
-            className="object-contain"
-            alt={team.data.name + "'s Profile Picture"}
-            src={team.data?.logo ?? "/spinner.svg"}
-            width={300}
-            height={300}
-            quality={100}
-          ></Image>
-          </div>
-          {/* team name and stuff */}
-          <div className="">
-            <h1 className="text-2xl text-white font-semibold">{team.data.name}</h1>
-            <div className="flex flex-row space-x-2">
-              <h2 className="italic font-medium text-slate-500">Global Rating:</h2>
-              <p className="slate-200">
-                {typeof parseFloat(String(team.data?.global_ranking)) ===
-                "number"
-                  ? (
+          <div className="flex flex-row items-center px-2">
+            <div className="shrink">
+              <Image
+                className="object-contain"
+                alt={team.data.name + "'s Profile Picture"}
+                src={team.data?.logo ?? "/spinner.svg"}
+                width={200}
+                height={200}
+                quality={100}
+              ></Image>
+            </div>
+            {/* team name and stuff */}
+            <div className="ml-5">
+              <h1 className="text-2xl text-white font-semibold">{team.data.name}</h1>
+              <div className="flex flex-row space-x-2">
+                <h2 className="italic font-medium text-slate-500">Global Rating:</h2>
+                <p className="slate-200">
+                  {typeof parseFloat(String(team.data?.global_ranking)) ===
+                    "number"
+                    ? (
                       parseFloat(String(team.data?.global_ranking)) * 1000
                     ).toFixed(0)
-                  : "Unranked"}
-              </p>
-            </div>
-            <div className="flex flex-row space-x-2">
-            <h2 className="italic font-medium text-slate-500">District Rating:</h2>
-              <p>
-                {typeof parseFloat(String(team.data?.district_ranking)) ===
-                "number"
-                  ? (
+                    : "Unranked"}
+                </p>
+              </div>
+              <div className="flex flex-row space-x-2">
+                <h2 className="italic font-medium text-slate-500">District Rating:</h2>
+                <p>
+                  {typeof parseFloat(String(team.data?.district_ranking)) ===
+                    "number"
+                    ? (
                       parseFloat(String(team.data?.district_ranking)) * 1000
                     ).toFixed(0)
-                  : "Unranked"}
-              </p>
-            </div>
-            <div className="flex flex-row space-x-2">
-            <h2 className="italic font-medium text-slate-500">W/L:</h2>
-              <p>
-                {team.data?.totalEqMatchesWon} / {team.data?.totalEqMatchesLost}
-              </p>
+                    : "Unranked"}
+                </p>
+              </div>
+              <div className="flex flex-row space-x-2">
+                <h2 className="italic font-medium text-slate-500">W/L:</h2>
+                <p>
+                  {team.data?.totalEqMatchesWon} / {team.data?.totalEqMatchesLost}
+                </p>
+              </div>
             </div>
           </div>
-          </div>
-          {/* graph stat thingie styles from TeamHistory component is fucking with styles here*/}
 
-            <TeamHistory id={team.data.id} />
+
+          <TeamHistory id={team.data.id} />
 
 
           {/* the thing next to the graph with players */}

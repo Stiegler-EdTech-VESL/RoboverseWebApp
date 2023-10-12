@@ -123,16 +123,15 @@ export default function TeamHistory(props: {
     }
 
     return (
-      <>
-        <div className={`relative  h-[${height}px] w-[${width}px] `}>
-          <div className="-mt-7 flex flex-col">
-            <div className="italic text-slate-400">Rating</div>
+      <div className="flex flex-col px-2">
+        <div className={`flex-none h-[${height}px] w-[${width}px] `}>
+          <div className="flex flex-col">
+            <h2 className="italic font-medium text-slate-500">Rating</h2>
 
             <div className=" z-40  flex items-center rounded-full bg-black bg-opacity-10">
               <svg
-                className={` h-5 w-5${
-                  increased ? " fill-green-500" : " fill-red-500"
-                } `}
+                className={` h-5 w-5${increased ? " fill-green-500" : " fill-red-500"
+                  } `}
                 data-name="Arrow"
                 viewBox="0 0 32 32"
               >
@@ -144,25 +143,24 @@ export default function TeamHistory(props: {
                   transform-origin="center"
                 ></path>
               </svg>
-              <div className="font-poppins text-3xl text-slate-200">
+              <div className="text-3xl text-white">
                 {typeof parseFloat(String(currentRanking)) === "number"
                   ? (parseFloat(String(currentRanking)) * 1000).toFixed(0)
                   : "Unranked"}
               </div>
             </div>
 
-            <div className="font-poppins text-3xl text-slate-200"></div>
-          </div>
-          <div className=" absolute  z-0 font-poppins text-3xl text-slate-200">
-            <Line
-              data={dataset}
-              height={height}
-              width={width}
-              options={options}
-            />
           </div>
         </div>
-      </>
+        <div className="max-w-sm" >
+          <Line
+            data={dataset}
+            height={height}
+            width={width}
+            options={options}
+          />
+        </div>
+      </div>
     );
   } else {
     return null;
