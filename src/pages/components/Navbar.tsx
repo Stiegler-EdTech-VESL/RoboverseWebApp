@@ -18,55 +18,57 @@ export default function Navbar() {
   const pathname = usePathname();
   return (
     <>
-      <div className="h-24 border-b-2">
-        <div className="absolute top-11 px-4">
-          <Link href="/">
-            <Image
-              className="hover:cursor-pointer"
-              width={350}
-              // layout="responsive"
-              unoptimized={true}
-              height={350}
-              src={"/Roboverse_Animation.gif"}
-              alt="VESL Logo"
-            ></Image>
-          </Link>
-        </div>
 
-        <div className="relative mt-5 flex flex-row items-center justify-between">
-          <ul className=" absolute inset-0 top-11 flex  flex-row items-center justify-center ">
-            {navPages.map((page) => {
-              return (
-                <li key={null}>
-                  <Navbutton
-                    selected={pathname == "/" + page.page.toLowerCase()}
-                    page={page.page}
-                    comingSoon={page.comingSoon}
-                  ></Navbutton>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+      <div className="h-50 flex flex-row place-content-between items-center border-b-2 border-zinc-500 border-opacity-75 py-5 px-5">
 
-        <div className="transit absolute -right-44 top-5 flex px-4 transition-transform duration-75 hover:-translate-x-32 ">
+
+        <Link href="/">
+          <Image
+            className="hover:cursor-pointer"
+            width={300}
+            unoptimized={true}
+            height={300}
+            src={"/Roboverse_Animation.gif"}
+            alt="VESL Logo"
+          ></Image>
+        </Link>
+
+
+        <ul className="flex flex-row place-content-between">
+          {navPages.map((page) => {
+            return (
+              <li key={null}>
+                <Navbutton
+                  selected={pathname == "/" + page.page.toLowerCase()}
+                  page={page.page}
+                  comingSoon={page.comingSoon}
+                ></Navbutton>
+              </li>
+            );
+          })}
+        </ul>
+
+
+        <div className="flex flex-col">
           <ProfilePicture width={80} height={80}></ProfilePicture>
-          <div className=" ml-4 flex flex-col items-center justify-center pr-16">
+          {/* REMOVED LOGOUT FROM NAVBAR AND PUT IN PROFILE */}
+          {/* <div className="">
             <Link
-              className="bg-green-500 px-5 text-slate-900 decoration-black hover:underline"
+              className=""
               href={"/teams/" + user.data?.Team?.name}
             >
               TEAM
             </Link>
             <button
-              className=" px-4 decoration-green-500 hover:underline"
+              className=""
               onClick={() => void signOut()}
             >
               LOGOUT
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
     </>
+
   );
 }
