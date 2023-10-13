@@ -12,7 +12,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
     <>
 
       <VeslVerseTab />
-      {sessionData ? <NavigationBar /> : <Authenticate />}
+      {sessionData ? <NavigationBar data={sessionData}/> : <Authenticate />}
 
       {sessionData ? children : null}
 
