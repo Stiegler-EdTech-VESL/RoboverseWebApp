@@ -31,7 +31,7 @@ export default function NavigationBar() {
   return (
     <Navbar
       onMenuOpenChange={setIsMenuOpen}
-      className="h-50 flex w-full flex-row place-content-between items-center border-b-2 border-zinc-500 border-opacity-75 p-5"
+      className="h-50 bg-black flex w-full flex-row place-content-between items-center border-b-2 border-zinc-500 border-opacity-75 p-5"
     >
       <NavbarMenuToggle
         aria-label={isMenuOpen ? "Close menu" : "Open menu"}
@@ -50,8 +50,8 @@ export default function NavigationBar() {
           ></Image>
         </Link>
       </NavbarBrand>
-      <div className="mx-auto w-[50%] px-5">
-        <ul className="hidden flex-row place-content-between md:flex">
+      <div className="flex w-fit lg:w-[50%] px-5 mx-5">
+        <ul className="hidden justify-self-center flex-row place-content-between md:flex">
           {navPages.map((page) => {
             const pageIndex = navPages.indexOf(page);
             const isFirstOrLast =
