@@ -34,8 +34,9 @@ export default function TeamPage() {
     return (
       <>
         <div className="flex flex-wrap  lg:flex-row justify-between flex-col items-center lg:place-content-evenly py-10">
+        <RankImage team_rank_title={team.data.global_rank_title} />
           {/* team logo */}
-          <div className="flex flex-row items-center px-2">
+          <div className="flex flex-row items-center bg-white bg-opacity-20 p-5 rounded-md ">
             <div className="shrink">
               <Image
                 className="object-contain"
@@ -78,7 +79,7 @@ export default function TeamPage() {
                 </p>
               </div>
               
-              <RankImage team_rank_title={team.data.global_rank_title} />
+              
             </div>
           </div>
 
