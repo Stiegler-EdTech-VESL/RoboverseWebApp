@@ -141,7 +141,7 @@ model TeamInEquationMatch {
   global_sigma_after     Decimal?      @db.Decimal
   global_sigma_before    Decimal?      @db.Decimal
   districtId             String?       @db.Uuid
-  Equation               Equation     @relation(fields: [equationID], references: [id])
+  Equation               Equation      @relation(fields: [equationID], references: [id])
   EquationMatch          EquationMatch @relation(fields: [equationMatchId], references: [id])
   Team                   Team          @relation(fields: [teamId], references: [id])
 }
