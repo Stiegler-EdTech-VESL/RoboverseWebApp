@@ -12,10 +12,10 @@ export default function UnityPlayer() {
 
   const { unityProvider, isLoaded, requestFullscreen, sendMessage } =
     useUnityContext({
-      loaderUrl: "/Builds/Build/Build 29.loader.js",
-      dataUrl: "/Builds/Build/Build 29.data.unityweb",
-      frameworkUrl: "/Builds/Build/Build 29.framework.js.unityweb",
-      codeUrl: "/Builds/Build/Build 29.wasm.unityweb",
+      loaderUrl: "/Builds/Build/Build 31.loader.js",
+      dataUrl: "/Builds/Build/Build 31.data.unityweb",
+      frameworkUrl: "/Builds/Build/Build 31.framework.js.unityweb",
+      codeUrl: "/Builds/Build/Build 31.wasm.unityweb",
     });
 
   function handleClickEnterFullscreen() {
@@ -89,7 +89,7 @@ export default function UnityPlayer() {
               unityProvider={unityProvider}
               style={{
                 // calculation to keep container at a 16:9 ratio
-                width: ((height/9)*16)-400,
+                width: (height / 9) * 16 - 400,
                 height: height - 200,
                 visibility: isLoaded ? "visible" : "hidden",
               }}
