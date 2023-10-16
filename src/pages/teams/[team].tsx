@@ -7,6 +7,7 @@ import Image from "next/image";
 import UserListTeam from "../components/UserListTeam";
 import EqMatchListTeam from "../components/EqMatchListTeam";
 import TeamHistory from "../components/TeamHistory";
+import RankImage from "../components/RankImage";
 
 export default function TeamPage() {
   const router = useRouter();
@@ -76,6 +77,8 @@ export default function TeamPage() {
                   {team.data?.totalEqMatchesWon} / {team.data?.totalEqMatchesLost}
                 </p>
               </div>
+              
+              <RankImage team_rank_title={team.data.global_rank_title} />
             </div>
           </div>
 
