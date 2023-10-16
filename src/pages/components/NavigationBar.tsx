@@ -8,15 +8,11 @@ import {
   NavbarContent,
   NavbarItem,
   Avatar,
-  NavbarMenu,
-  NavbarMenuToggle,
-  NavbarMenuItem,
 
 } from "@nextui-org/react";
-import { useState } from "react";
+
 
 export default function NavigationBar(props: any) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navPages = [
     { page: "Teams", comingSoon: false },
@@ -27,8 +23,6 @@ export default function NavigationBar(props: any) {
   const pathname = usePathname();
   return (
     <Navbar
-      isMenuOpen={isMenuOpen}
-      onMenuOpenChange={setIsMenuOpen}
       height={"145px"}
       className="border-b-2 border-zinc-500 border-opacity-75 bg-black py-5 px-5"
     >
