@@ -30,13 +30,8 @@ export default function NavigationBar(props: any) {
       isMenuOpen={isMenuOpen}
       onMenuOpenChange={setIsMenuOpen}
       height={"145px"}
-      className="border-b-2 border-zinc-500 border-opacity-75 bg-black py-5"
+      className="border-b-2 border-zinc-500 border-opacity-75 bg-black py-5 px-5"
     >
-      <NavbarContent className="md:hidden" justify="start">
-        <NavbarMenuToggle
-          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-        />
-      </NavbarContent>
 
 
       <NavbarContent className="hidden grow-0 md:block">
@@ -92,20 +87,7 @@ export default function NavigationBar(props: any) {
           />
         </Link>
       </NavbarContent>
-      <NavbarMenu className="">
-        {navPages.map((page, index) => (
-          <NavbarMenuItem key={`${page}-${index}`}>
-            <Link
-              className=" text-3xl"
-              color="primary"
-              href={page.comingSoon?"/comingsoon":"/" + page.page.toLowerCase()}
-              size="lg"
-            >
-              {page.page}
-            </Link>
-          </NavbarMenuItem>
-        ))}
-      </NavbarMenu>
+
     </Navbar>
   );
 }
