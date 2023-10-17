@@ -68,12 +68,19 @@ export default function Profile() {
 
           {sessionData?.user.id === user.data.id ? (
             <button
-              className="rounded-md px-1 text-slate-500 hover:text-red-800 hover:underline"
+              className="rounded-md px-1 text-slate-500 hover:text-green-800 hover:underline"
               onClick={() => void signOut()}
             >
               Log Out
             </button>
           ) : null}
+      
+            <Link
+              className="rounded-md px-1 text-slate-500 hover:text-green-800 hover:underline"
+              href={"/teams/" + user.data?.Team?.name}
+            >
+              View My Team
+            </Link>
         </div>
       </div>
     </>
