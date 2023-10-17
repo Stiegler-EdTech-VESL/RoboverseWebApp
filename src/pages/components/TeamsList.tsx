@@ -35,20 +35,21 @@ export default function TeamsList(props: { distID: string }) {
     );
   } else {
     return (
-      <div className={`w-full `}>
-        <Table className=" w-full rounded-md bg-green-500 text-2xl">
-          <TableHeader className="sticky top-0 bg-green-500 text-black">
-            <TableColumn className="px-4 py-2 text-black">Name</TableColumn>
-            <TableColumn className="px-4 py-2 text-black">
+      // <div className={`w-full `}>
+        <Table className=" rounded-md">
+          <TableHeader className="">
+            <TableColumn className="bg-green-500 text-black rounded-tl-md">Rank</TableColumn>
+            <TableColumn className="bg-green-500 text-black">Name</TableColumn>
+            <TableColumn className="bg-green-500 text-black py-2" >
               Total Matches
             </TableColumn>
-            <TableColumn className="px-4 py-2  text-black">
+            <TableColumn className="bg-green-500 text-black">
               Total Wins
             </TableColumn>
-            <TableColumn className="px-4  py-2 text-black">
+            <TableColumn className="bg-green-500 text-black">
               Total Losses
             </TableColumn>
-            <TableColumn className="px-4  py-2 text-black">
+            <TableColumn className="bg-green-500 text-black rounded-tr-md">
               {props.distID == "Global" ? "Global" : "District"} Rating
             </TableColumn>
           </TableHeader>
@@ -71,12 +72,14 @@ export default function TeamsList(props: { distID: string }) {
 
               return (
                 <TableRow
-                  className={`${
-                    i % 2 == 0 ? "bg-neutral-950" : "bg-zinc-950"
-                  }  rounded-md`}
-                  key={i}
+                key={i}
+                className={
+                    i % 2 == 0 ? "bg-zinc-800" : "bg-zinc-950"
+                  }
+                  
                 >
-                  <TableCell className=" rounded-md ">{team.name}</TableCell>
+                  <TableCell className="py-3">{i + 1}</TableCell>
+                  <TableCell><Link href={`/teams/${team.name}`}>{team.name}</Link></TableCell>
                   <TableCell>{totalMatches}</TableCell>
                   <TableCell>{totalWins}</TableCell>
                   <TableCell>{totalLosses}</TableCell>
@@ -104,7 +107,7 @@ export default function TeamsList(props: { distID: string }) {
             })}
           </TableBody>
         </Table>
-      </div>
+      // {/* </div> */}
     );
   }
 }

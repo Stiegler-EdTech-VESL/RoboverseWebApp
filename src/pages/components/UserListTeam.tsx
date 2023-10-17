@@ -3,6 +3,15 @@ import React from "react";
 import { api } from "~/utils/api";
 import Image from "next/image";
 import ProfileNamePic from "./ProfileNamePic";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableColumn,
+  TableRow,
+  TableCell,
+} from "@nextui-org/react";
+import { TableCellsIcon } from "@heroicons/react/24/solid";
 
 export default function UserListTeam(props: { teamID: string }) {
   const users = api.users.getUsersByTeamID.useQuery({ teamId: props.teamID });
@@ -23,38 +32,36 @@ export default function UserListTeam(props: { teamID: string }) {
     );
   } else {
     return (
-      <div className="max-h-72 w-full overflow-auto">
-        <table className="w-full text-xl ">
-          <thead className="sticky top-0 border-b-2 bg-black text-slate-400">
-            <tr>
-              <th className="px-2 ">Players</th>
-              <th className="px-2 ">Created Equations</th>
-            </tr>
-          </thead>
-          <tbody className="">
+      // <div className="min-w-[450px]">
+        <Table className="px-2">
+          <TableHeader className="">
+              <TableColumn className="italic font-medium text-slate-500 text-lg">Players</TableColumn>
+              <TableColumn className="italic font-medium text-slate-500 text-lg">Equations Created</TableColumn>
+          </TableHeader>
+          <TableBody className="flex flex-col items-center">
             {users.data?.map((user) => {
               if (!user) {
-                return null;
+                return <></>;
               }
 
               return (
-                <tr className="" key={user.id}>
-                  <td className="flex items-center justify-center px-4 py-2 text-center hover:underline">
+                <TableRow className="" key={user.id}>
+                  <TableCell className=" px-10">
                     <ProfileNamePic
                       name={user.name}
                       image={user.image ? user.image : null}
                       showName={true}
                     />
-                  </td>
-                  <td className="px-4 py-2 text-center">
+                  </TableCell>
+                  <TableCell className="flex flex-col items-center">
                     {user.Equation ? user.Equation.length : "0"}
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               );
             })}
-          </tbody>
-        </table>
-      </div>
+          </TableBody>
+        </Table>
+      // </div>
     );
   }
 }

@@ -1,7 +1,8 @@
 import React, { type ReactNode } from "react";
 import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
-import Navbar from "./Navbar";
+import NavigationBar from "./NavigationBar";
+import VeslVerseTab from "./VeslVerseTab";
 // import ReactDOM from "react-dom";
 
 const Layout = ({ children }: { children: ReactNode }) => {
@@ -9,24 +10,13 @@ const Layout = ({ children }: { children: ReactNode }) => {
 
   return (
     <>
-      <a href="https://app.vesl.gg/catalog">
-        <div
-          className="vi hover:border-b-full md:mx-25 mx-[20%] max-h-10
-        min-w-fit break-before-avoid-page rounded-b-full  bg-gradient-to-br 
-        from-green-200 via-green-500 to-green-800 py-2 text-black 
-        sm:transition-none md:transition-none lg:transition-all lg:hover:mx-[35%] "
-          style={{ animation: "none" }}
-        >
-          <div className="flex items-center justify-center ">
-            <p className=" ">MORE IN THE VESLVERSE</p>
-          </div>
-        </div>
-      </a>
 
-      <div className="overflow-x-hidden overscroll-x-none">
-        {sessionData ? <Navbar /> : <Authenticate />}
-        {sessionData ? children : null}
-      </div>
+      <VeslVerseTab />
+      {sessionData ? <NavigationBar data={sessionData}/> : <Authenticate />}
+
+      {sessionData ? children : null}
+
+
     </>
   );
 };
