@@ -10,7 +10,7 @@ datasource db {
 model Perms {
   id              String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name            String  @default("Custom")
-  is_admin        Boolean @default(false) // if true, all other perms are ignored
+  is_admin        Boolean @default(false)
   admin_dash      Boolean @default(false)
   create_team     Boolean @default(false)
   edit_team       Boolean @default(false)
@@ -105,6 +105,8 @@ model Team {
   global_sigma        Decimal?              @default(8.3333333333) @db.Decimal
   district_ranking    Decimal?              @db.Decimal
   global_ranking      Decimal?              @db.Decimal
+  global_rank_title   String?               @default("unranked")
+  district_rank_title String?               @default("unranked")
   Equation            Equation[]
   Job                 Job[]
   District            District?             @relation(fields: [districtId], references: [id])
@@ -125,7 +127,7 @@ model TeamInEquationMatch {
   equationMatchId        String        @db.Uuid
   teamId                 String        @db.Uuid
   score                  Int?          @default(0)
-  equationID             String        @db.Uuid
+  equationID             String?       @db.Uuid
   winner                 Boolean?      @default(false)
   id                     String        @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   district_mu_after      Decimal?      @db.Decimal
@@ -139,7 +141,7 @@ model TeamInEquationMatch {
   global_sigma_after     Decimal?      @db.Decimal
   global_sigma_before    Decimal?      @db.Decimal
   districtId             String?       @db.Uuid
-  Equation               Equation      @relation(fields: [equationID], references: [id])
+  Equation               Equation?     @relation(fields: [equationID], references: [id])
   EquationMatch          EquationMatch @relation(fields: [equationMatchId], references: [id])
   Team                   Team          @relation(fields: [teamId], references: [id])
 }
@@ -152,20 +154,21 @@ model District {
 }
 
 model User {
-  id            String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name          String     @unique @db.VarChar(255)
-  epic_id       String?    @unique @db.VarChar(255)
-  email         String?    @unique
-  image         String?
-  team_id       String?    @default("e968e4fc-80e6-4868-8e83-d6451c2bfcaa") @db.Uuid
-  emailVerified DateTime?
-  discord_id    String     @default(dbgenerated("('@'::text || (name)::text)")) @db.VarChar(255)
-  Account       Account[]
-  Equation      Equation[]
-  Session       Session[]
-  Team          Team?      @relation(fields: [team_id], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  perm_id       String?    @db.Uuid
-  Perm          Perms?     @relation(fields: [perm_id], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  id              String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name            String     @unique @db.VarChar(255)
+  epic_id         String?    @unique @db.VarChar(255)
+  email           String?    @unique
+  image           String?
+  team_id         String?    @default(dbgenerated("'e968e4fc-80e6-4868-8e83-d6451c2bfcaa'::uuid")) @db.Uuid
+  emailVerified   DateTime?
+  discord_id      String     @default(dbgenerated("('@'::text || (name)::text)")) @db.VarChar(255)
+  perm_id         String?    @db.Uuid
+  progression_lvl Int        @default(0)
+  Account         Account[]
+  Equation        Equation[]
+  Session         Session[]
+  Perm            Perms?     @relation(fields: [perm_id], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  Team            Team?      @relation(fields: [team_id], references: [id], onDelete: Restrict, onUpdate: Restrict)
 }
 
 model VerificationToken {
