@@ -28,12 +28,16 @@ const RankImage: FC<RankImageProps> = ({ team_rank_title }) => {
             switch (team_rank_title) {
                 case "Bronze_1":
                     imgSrc = '/rankings/bronze_1.png'
+                    break;
                 case "Bronze_2":
                     imgSrc = '/rankings/bronze_2.png'
+                    break;
                 case "Bronze_2":
                     imgSrc = '/rankings/bronze_2.png'
+                    break;
                 case "Bronze_3":
                     imgSrc = '/rankings/bronze_3.png'
+                    break;
             }
         }
 
