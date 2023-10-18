@@ -9,12 +9,12 @@ const RankImage: FC<RankImageProps> = ({ team_rank_title }) => {
   var imgSrc: string = "";
 
   //if-statements filtering for first letter in the team's rank_title
-
-  if (team_rank_title == null) {
+  console.log("RANKKKK: " + team_rank_title);
+  if (team_rank_title === null) {
     imgSrc = "/rankings/charcoal.png";
-    console.log("RANKKKK: " + team_rank_title);
+    
   } else {
-    if (team_rank_title == "Charcoal") {
+    if (team_rank_title == "Charcoal" || "unranked") {
       imgSrc = "/rankings/charcoal.png";
     }
 
