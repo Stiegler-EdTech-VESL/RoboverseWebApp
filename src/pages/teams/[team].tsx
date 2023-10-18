@@ -18,7 +18,10 @@ export default function TeamPage() {
     teamName = "GhostTeam";
   }
 
+ 
+
   const team = api.teams.getTeamByName.useQuery({ name: teamName });
+  const isNotRanked: boolean = team.data?.global_ranking == null;
 
   if (team.data == null) {
     return (
@@ -53,23 +56,21 @@ export default function TeamPage() {
               <div className="flex flex-row space-x-2">
                 <h2 className="italic font-medium text-slate-500">Global Rating:</h2>
                 <p className="slate-200">
-                  {typeof parseFloat(String(team.data?.global_ranking)) ===
-                    "number"
-                    ? (
+                  {isNotRanked
+                    ?"Unranked" 
+                    : (
                       parseFloat(String(team.data?.global_ranking)) * 1000
-                    ).toFixed(0)
-                    : "Unranked"}
+                    ).toFixed(0)}
                 </p>
               </div>
               <div className="flex flex-row space-x-2">
                 <h2 className="italic font-medium text-slate-500">District Rating:</h2>
                 <p>
-                  {typeof parseFloat(String(team.data?.district_ranking)) ===
-                    "number"
-                    ? (
+                {isNotRanked
+                    ?"Unranked" 
+                    : (
                       parseFloat(String(team.data?.district_ranking)) * 1000
-                    ).toFixed(0)
-                    : "Unranked"}
+                    ).toFixed(0)}
                 </p>
               </div>
               <div className="flex flex-row space-x-2">
