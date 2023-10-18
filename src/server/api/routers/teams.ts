@@ -9,19 +9,11 @@ export const teamsRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       if (input.districtId === "Global") {
         return await ctx.prisma.team.findMany({
-          where: {
-            global_ranking: {
-              not: null,
-            },
-          },
           orderBy: { global_ranking: "desc" },
         });
       } else {
         return await ctx.prisma.team.findMany({
           where: {
-            district_ranking: {
-              not: null,
-            },
             districtId: input.districtId,
           },
           orderBy: { district_ranking: "desc" },
