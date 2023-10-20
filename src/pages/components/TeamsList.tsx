@@ -20,8 +20,8 @@ interface TeamsListProps {
 
 interface teamData {
   name: string;
-  globalRank: Decimal | null;
-  districtRank: Decimal | null;
+  globalRank: string | null;
+  districtRank: string| null;
   totalWins: number;
   totalLost: number;
   totalMatches: number;
@@ -36,12 +36,13 @@ const TeamsList: FC<TeamsListProps> = ({ distID }) => {
 
   let teamsList: teamData[] = [];
 
+
   if (teams.data) {
     teamsList = teams.data.map((team: Team) => {
       return {
         name: team.name,
-        globalRank: team.global_ranking,
-        districtRank: team.district_ranking,
+        globalRank: (team.global_ranking === null ? '0' : (team.global_ranking as any * 1000).toFixed(0)),
+        districtRank: (team.global_ranking === null ? '0' : (team.district_ranking as any * 1000).toFixed(0)), //just change it to a string here
         totalWins: team.totalEqMatchesWon,
         totalLost: team.totalEqMatchesLost,
         totalMatches: team.totalEqMatches,
@@ -109,15 +110,7 @@ const TeamsList: FC<TeamsListProps> = ({ distID }) => {
                 <TableCell>{team.totalWins}</TableCell>
                 <TableCell>{team.totalLost}</TableCell>
                 <TableCell>
-                  {isFilterGlobal
-                    ? team.totalMatches == 0
-                      ? "Unranked"
-                      : team.globalRank == null
-                      ? "Unranked"
-                      : team.globalRank.toString()
-                    : team.totalMatches == 0
-                    ? "Unranked"
-                    : team.districtRank?.toString()}
+                  {isFilterGlobal ? team.globalRank : team.districtRank}
                 </TableCell>
               </TableRow>
             );
