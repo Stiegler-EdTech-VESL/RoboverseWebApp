@@ -2,6 +2,7 @@ import { api } from "~/utils/api";
 import Image from "next/image";
 import Link from "next/link";
 import { Team } from "@prisma/client";
+import { FC } from 'react';
 
 import {
   Table,
@@ -12,12 +13,18 @@ import {
   TableCell,
 } from "@nextui-org/react";
 
-export default function TeamsList(props: { distID: string }) {
-  const user = api.users.getLoggedInUser.useQuery();
+interface TeamsListProps {
+  distID: string,
+}
+
+const TeamsList: FC <TeamsListProps> = ({distID})  => {
+
 
   const teams = api.teams.getAllTeamsWithRank.useQuery({
-    districtId: props.distID,
+    districtId: distID,
   });
+
+
 
   if (!teams.data) {
     return (
@@ -50,7 +57,7 @@ export default function TeamsList(props: { distID: string }) {
               Total Losses
             </TableColumn>
             <TableColumn className="bg-green-500 text-black rounded-tr-md">
-              {props.distID == "Global" ? "Global" : "District"} Rating
+              {distID == "Global" ? "Global" : "District"} Rating
             </TableColumn>
           </TableHeader>
           <TableBody
@@ -58,14 +65,13 @@ export default function TeamsList(props: { distID: string }) {
             emptyContent={"No rows to display."}
           >
             {teams.data.map((team: Team, i) => {
-              const isUserTeam = user.data?.Team?.id === team.id;
               const totalWins = team.totalEqMatchesWon;
               const totalLosses = team.totalEqMatchesLost;
               const totalMatches = team.totalEqMatches;
 
               if (
-                props.distID !== "Global" &&
-                team.districtId !== props.distID
+                distID !== "Global" &&
+                team.districtId !== distID
               ) {
                 return <> </>;
               }
@@ -86,7 +92,7 @@ export default function TeamsList(props: { distID: string }) {
                   <TableCell>
                     {typeof parseFloat(
                       String(
-                        props.distID == "Global"
+                        distID == "Global"
                           ? team.global_ranking
                           : team.district_ranking
                       )
@@ -94,7 +100,7 @@ export default function TeamsList(props: { distID: string }) {
                       ? (
                           parseFloat(
                             String(
-                              props.distID == "Global"
+                              distID == "Global"
                                 ? team.global_ranking
                                 : team.district_ranking
                             )
@@ -111,3 +117,5 @@ export default function TeamsList(props: { distID: string }) {
     );
   }
 }
+
+export default TeamsList;
