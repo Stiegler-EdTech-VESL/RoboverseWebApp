@@ -2,6 +2,7 @@ import { api } from "~/utils/api";
 import Image from "next/image";
 import Link from "next/link";
 import { Team } from "@prisma/client";
+import { FC } from "react";
 
 import {
   Table,
@@ -11,13 +12,50 @@ import {
   TableRow,
   TableCell,
 } from "@nextui-org/react";
+import { Decimal } from "@prisma/client/runtime/library";
 
-export default function TeamsList(props: { distID: string }) {
-  const user = api.users.getLoggedInUser.useQuery();
+interface TeamsListProps {
+  distID: string;
+}
 
+interface teamData {
+  name: string;
+  globalRank: Decimal | null;
+  districtRank: Decimal | null;
+  totalWins: number;
+  totalLost: number;
+  totalMatches: number;
+}
+
+const TeamsList: FC<TeamsListProps> = ({ distID }) => {
   const teams = api.teams.getAllTeamsWithRank.useQuery({
-    districtId: props.distID,
+    districtId: distID,
   });
+
+  const isFilterGlobal: boolean = distID === "Global";
+
+  let teamsList: teamData[] = [];
+
+  if (teams.data) {
+    teamsList = teams.data.map((team: Team) => {
+      return {
+        name: team.name,
+        globalRank: team.global_ranking,
+        districtRank: team.district_ranking,
+        totalWins: team.totalEqMatchesWon,
+        totalLost: team.totalEqMatchesLost,
+        totalMatches: team.totalEqMatches,
+      };
+    });
+
+    isFilterGlobal
+      ? teamsList.sort((a, b) => (b.globalRank as any) - (a.globalRank as any))
+      : teamsList.sort(
+          (a, b) => (b.districtRank as any) - (a.districtRank as any)
+        );
+  }
+
+  console.log(teamsList);
 
   if (!teams.data) {
     return (
@@ -35,79 +73,59 @@ export default function TeamsList(props: { distID: string }) {
     );
   } else {
     return (
-      // <div className={`w-full `}>
-        <Table className=" rounded-md">
-          <TableHeader className="">
-            <TableColumn className="bg-green-500 text-black rounded-tl-md">Rank</TableColumn>
-            <TableColumn className="bg-green-500 text-black">Name</TableColumn>
-            <TableColumn className="bg-green-500 text-black py-2" >
-              Total Matches
-            </TableColumn>
-            <TableColumn className="bg-green-500 text-black">
-              Total Wins
-            </TableColumn>
-            <TableColumn className="bg-green-500 text-black">
-              Total Losses
-            </TableColumn>
-            <TableColumn className="bg-green-500 text-black rounded-tr-md">
-              {props.distID == "Global" ? "Global" : "District"} Rating
-            </TableColumn>
-          </TableHeader>
-          <TableBody
-            className=" rounded-md bg-gray-900"
-            emptyContent={"No rows to display."}
-          >
-            {teams.data.map((team: Team, i) => {
-              const isUserTeam = user.data?.Team?.id === team.id;
-              const totalWins = team.totalEqMatchesWon;
-              const totalLosses = team.totalEqMatchesLost;
-              const totalMatches = team.totalEqMatches;
+      <Table className=" rounded-md">
+        <TableHeader className="">
+          <TableColumn className="rounded-tl-md bg-green-500 text-black">
+            Rank
+          </TableColumn>
+          <TableColumn className="bg-green-500 text-black">Name</TableColumn>
+          <TableColumn className="bg-green-500 py-2 text-black">
+            Total Matches
+          </TableColumn>
+          <TableColumn className="bg-green-500 text-black">
+            Total Wins
+          </TableColumn>
+          <TableColumn className="bg-green-500 text-black">
+            Total Losses
+          </TableColumn>
+          <TableColumn className="rounded-tr-md bg-green-500 text-black">
+            {isFilterGlobal ? "Global Rating" : "District Ranking"}
+          </TableColumn>
+        </TableHeader>
+        <TableBody
+          className=" rounded-md bg-gray-900"
+          emptyContent={"No rows to display."}
+        >
+          {teamsList.map((team) => {
+            let i = teamsList.indexOf(team);
 
-              if (
-                props.distID !== "Global" &&
-                team.districtId !== props.distID
-              ) {
-                return <> </>;
-              }
-
-              return (
-                <TableRow
-                key={i}
-                className={
-                    i % 2 == 0 ? "bg-zinc-800" : "bg-zinc-950"
-                  }
-                  
-                >
-                  <TableCell className="py-3">{i + 1}</TableCell>
-                  <TableCell><Link href={`/teams/${team.name}`}>{team.name}</Link></TableCell>
-                  <TableCell>{totalMatches}</TableCell>
-                  <TableCell>{totalWins}</TableCell>
-                  <TableCell>{totalLosses}</TableCell>
-                  <TableCell>
-                    {typeof parseFloat(
-                      String(
-                        props.distID == "Global"
-                          ? team.global_ranking
-                          : team.district_ranking
-                      )
-                    ) === "number"
-                      ? (
-                          parseFloat(
-                            String(
-                              props.distID == "Global"
-                                ? team.global_ranking
-                                : team.district_ranking
-                            )
-                          ) * 1000
-                        ).toFixed(0)
-                      : "Unranked"}
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      // {/* </div> */}
+            return (
+              <TableRow className={i % 2 == 0 ? "bg-zinc-800" : "bg-zinc-950"}>
+                <TableCell className="py-3">{i + 1}</TableCell>
+                <TableCell>
+                  <Link href={`/teams/${team.name}`}>{team.name}</Link>
+                </TableCell>
+                <TableCell>{team.totalMatches}</TableCell>
+                <TableCell>{team.totalWins}</TableCell>
+                <TableCell>{team.totalLost}</TableCell>
+                <TableCell>
+                  {isFilterGlobal
+                    ? team.totalMatches == 0
+                      ? "Unranked"
+                      : team.globalRank == null
+                      ? "Unranked"
+                      : team.globalRank.toString()
+                    : team.totalMatches == 0
+                    ? "Unranked"
+                    : team.districtRank?.toString()}
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
     );
   }
-}
+};
+
+export default TeamsList;
