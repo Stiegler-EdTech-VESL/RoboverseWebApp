@@ -7,6 +7,7 @@ import Image from "next/image";
 import UserListTeam from "../components/UserListTeam";
 import EqMatchListTeam from "../components/EqMatchListTeam";
 import TeamHistory from "../components/TeamHistory";
+import RankImage from "../components/RankImage";
 
 export default function TeamPage() {
   const router = useRouter();
@@ -17,7 +18,10 @@ export default function TeamPage() {
     teamName = "GhostTeam";
   }
 
+ 
+
   const team = api.teams.getTeamByName.useQuery({ name: teamName });
+  const isNotRanked: boolean = team.data?.global_ranking == null;
 
   if (team.data == null) {
     return (
@@ -33,8 +37,9 @@ export default function TeamPage() {
     return (
       <>
         <div className="flex flex-wrap  lg:flex-row justify-between flex-col items-center lg:place-content-evenly py-10">
+        <RankImage team_rank_title={team.data.global_rank_title} />
           {/* team logo */}
-          <div className="flex flex-row items-center px-2">
+          <div className="flex flex-row items-center bg-white bg-opacity-20 p-5 rounded-md ">
             <div className="shrink">
               <Image
                 className="object-contain"
@@ -51,23 +56,21 @@ export default function TeamPage() {
               <div className="flex flex-row space-x-2">
                 <h2 className="italic font-medium text-slate-500">Global Rating:</h2>
                 <p className="slate-200">
-                  {typeof parseFloat(String(team.data?.global_ranking)) ===
-                    "number"
-                    ? (
+                  {isNotRanked
+                    ?"Unranked" 
+                    : (
                       parseFloat(String(team.data?.global_ranking)) * 1000
-                    ).toFixed(0)
-                    : "Unranked"}
+                    ).toFixed(0)}
                 </p>
               </div>
               <div className="flex flex-row space-x-2">
                 <h2 className="italic font-medium text-slate-500">District Rating:</h2>
                 <p>
-                  {typeof parseFloat(String(team.data?.district_ranking)) ===
-                    "number"
-                    ? (
+                {isNotRanked
+                    ?"Unranked" 
+                    : (
                       parseFloat(String(team.data?.district_ranking)) * 1000
-                    ).toFixed(0)
-                    : "Unranked"}
+                    ).toFixed(0)}
                 </p>
               </div>
               <div className="flex flex-row space-x-2">
@@ -76,6 +79,8 @@ export default function TeamPage() {
                   {team.data?.totalEqMatchesWon} / {team.data?.totalEqMatchesLost}
                 </p>
               </div>
+              
+              
             </div>
           </div>
 
