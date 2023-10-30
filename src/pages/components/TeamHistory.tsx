@@ -122,16 +122,19 @@ export default function TeamHistory(props: {
       increased = currentRanking > ranking5MatchesAgo;
     }
 
+    const isNotRanked: boolean = list.length == 0;
+
     return (
       <div className="flex flex-col px-2">
         <div className={`flex-none h-[${height}px] w-[${width}px] `}>
           <div className="flex flex-col">
-            <h2 className="italic font-medium text-slate-500">Rating</h2>
+            <h2 className="font-medium italic text-slate-500">Rating</h2>
 
             <div className=" z-40  flex items-center rounded-full bg-black bg-opacity-10">
               <svg
-                className={` h-5 w-5${increased ? " fill-green-500" : " fill-red-500"
-                  } `}
+                className={` h-5 w-5${
+                  increased ? " fill-green-500" : " fill-red-500"
+                } `}
                 data-name="Arrow"
                 viewBox="0 0 32 32"
               >
@@ -144,15 +147,14 @@ export default function TeamHistory(props: {
                 ></path>
               </svg>
               <div className="text-3xl text-white">
-                {typeof parseFloat(String(currentRanking)) === "number"
-                  ? (parseFloat(String(currentRanking)) * 1000).toFixed(0)
-                  : "Unranked"}
+                {isNotRanked
+                  ? 'No Match History'
+                  : (parseFloat(String(currentRanking)) * 1000).toFixed(0) }
               </div>
             </div>
-
           </div>
         </div>
-        <div className="max-w-sm" >
+        <div className="max-w-sm">
           <Line
             data={dataset}
             height={height}
