@@ -15,7 +15,7 @@ import {
 
 interface playerData {
   name: string;
-  globalRank: string;
+  globalRank: string | null;
   totalWins: number;
   totalLost: number | null;
   totalMatches: number;
@@ -42,8 +42,18 @@ const PlayersList: FC = () => {
       };
     });
 
-    let print = JSON.stringify(playersList);
-    console.log( print);
+    function isNotZero(player: playerData) {
+      return Number(player.globalRank) !== 0
+    };
+
+    function isZero(rank: playerData) {
+      return Number(rank.globalRank) === 0 && Number(rank.totalMatches === 0)
+    };
+
+    let nonZeroList = playersList.filter(isNotZero);
+    let zeroList = playersList.filter(isZero);
+
+    let sortedPlayers = nonZeroList.concat(zeroList);
 
     if (!players.data) {
       return (
@@ -84,24 +94,30 @@ const PlayersList: FC = () => {
             className=" rounded-md bg-gray-900"
             emptyContent={"No rows to display."}
           >
-            {playersList.map((player) => {
-            let i = playersList.indexOf(player);
+            {sortedPlayers.map((player) => {
+              let i = sortedPlayers.indexOf(player);
 
-            return (
-              <TableRow className={i % 2 == 0 ? "bg-zinc-800" : "bg-zinc-950"}>
-                <TableCell className="py-3">{i + 1}</TableCell>
-                <TableCell>
-                  <Link href={`/teams/${player.name}`}>{player.name}</Link>
-                </TableCell>
-                <TableCell>{player.totalMatches + player.tournLost + player.tournWins}</TableCell>
-                <TableCell>{player.totalWins} / {player.totalLost}</TableCell>
-                <TableCell>{player.tournWins} / {player.tournLost}</TableCell>
-                <TableCell>
-                  {player.globalRank}
-                </TableCell>
-              </TableRow>
-            );
-          })}
+              return (
+                <TableRow
+                  className={i % 2 == 0 ? "bg-zinc-800" : "bg-zinc-950"}
+                >
+                  <TableCell className="py-3">{i + 1}</TableCell>
+                  <TableCell>
+                    <Link href={`/teams/${player.name}`}>{player.name}</Link>
+                  </TableCell>
+                  <TableCell>
+                    {player.totalMatches + player.tournLost + player.tournWins}
+                  </TableCell>
+                  <TableCell>
+                    {player.totalWins} / {player.totalLost}
+                  </TableCell>
+                  <TableCell>
+                    {player.tournWins} / {player.tournLost}
+                  </TableCell>
+                  <TableCell>{player.globalRank}</TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       );
