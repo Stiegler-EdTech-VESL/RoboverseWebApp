@@ -81,7 +81,7 @@ const PlayersList: FC = () => {
               Total Matches
             </TableColumn>
             <TableColumn className="bg-green-500 text-black">
-              Scrim W/L
+              Total W/L
             </TableColumn>
             <TableColumn className="bg-green-500 text-black">
               VESL W/L
