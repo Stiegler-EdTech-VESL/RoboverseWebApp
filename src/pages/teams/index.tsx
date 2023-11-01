@@ -7,12 +7,12 @@ import { User } from "@prisma/client";
 import PlayersList from "../components/PlayersList";
 
 export default function TeamsPage() {
-  // const districts = api.districts.getAllDistricts.useQuery();
-  // const [selectedValue, setSelectedValue] = useState("Global");
+  const districts = api.districts.getAllDistricts.useQuery();
+  const [selectedValue, setSelectedValue] = useState("Global");
 
   return (
     <>
-      {/* <TopTeams distID={selectedValue} />
+      <TopTeams distID={selectedValue} />
       <div className="flex  items-center justify-center">
         <RoboDropdown
           items={
@@ -26,12 +26,12 @@ export default function TeamsPage() {
             setSelectedValue(input);
             console.log(input);
           }}
-        ></RoboDropdown> */}
-      {/* </div> */}
+        ></RoboDropdown>
+      </div>
 
       <div className="flex items-center justify-center">
         <div className="mx-20 mt-4 flex-grow self-center pb-4 text-center  text-3xl text-slate-300">
-          {/* <TeamsList distID={selectedValue} /> */}
+          <TeamsList distID={selectedValue} />
           <PlayersList></PlayersList>
         </div>
       </div>
