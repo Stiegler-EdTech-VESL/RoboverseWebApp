@@ -79,4 +79,13 @@ export const usersRouter = createTRPCRouter({
       ]
     });
   }),
+
+  getTopUsers: publicProcedure.query(({ ctx }) => {
+    return ctx.prisma.user.findMany({
+      orderBy : [
+        {global_ranking: 'desc'}
+      ],
+      take: 3,
+    })
+  })
 });
