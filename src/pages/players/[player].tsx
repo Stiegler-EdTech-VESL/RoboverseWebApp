@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import RankImage from "../components/RankImage";
 import Image from "next/image";
 import PlayerHistory from "../components/PlayerHistory";
+import EqMatchListUser from "../components/EqMatchListUser";
 
 const Player = () => {
   const router = useRouter();
@@ -62,6 +63,7 @@ const Player = () => {
         </div>
 
         <PlayerHistory id={player.data?.id!} />
+        <EqMatchListUser userId={player.data?.id!}></EqMatchListUser>
       </div>
 
     </>

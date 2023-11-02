@@ -57,6 +57,7 @@ export const usersRouter = createTRPCRouter({
         },
         include: {
           Team: true,
+          UserInEquationMatch: true,
         },
       });
       return user;
