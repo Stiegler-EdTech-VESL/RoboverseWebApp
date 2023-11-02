@@ -84,4 +84,34 @@ export const usersRouter = createTRPCRouter({
       take: 3,
     });
   }),
+
+  getUserGlobalRankHistory: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const matches = await ctx.prisma.userInEquationMatch
+        .findMany({
+          where: {
+            userId: input.id,
+          },
+          take: 10,
+          include: {
+            EquationMatch: true,
+          },
+          orderBy: { EquationMatch: { ended: "desc" } },
+        })
+        .catch(() => {
+          return null;
+        });
+      const ret = matches?.map((match) => {
+        return {
+          id: match.id,
+          ranking: match.user_global_mu_after,
+          date: match.EquationMatch.ended,
+        };
+      });
+      return ret?.slice(0).reverse();
+    }),
 });
+
+
+
