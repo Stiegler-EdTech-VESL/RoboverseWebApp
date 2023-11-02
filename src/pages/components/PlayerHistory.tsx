@@ -97,7 +97,7 @@ export default function PlayerHistory(props: {
 
   const userHistory = api.users.getUserGlobalRankHistory.useQuery({
     id: props.id,
-  });
+  }, {enabled: !!props.id});
 
   if (userHistory.data) {
     const dataset = {
