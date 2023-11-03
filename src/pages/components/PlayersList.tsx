@@ -99,11 +99,12 @@ const PlayersList: FC = () => {
 
               return (
                 <TableRow
+                  key={i}
                   className={i % 2 == 0 ? "bg-zinc-800" : "bg-zinc-950"}
                 >
                   <TableCell className="py-3">{i + 1}</TableCell>
                   <TableCell>
-                    <Link href={`/teams/${player.name}`}>{player.name}</Link>
+                    <Link href={`/players/${player.name}`}>{player.name}</Link>
                   </TableCell>
                   <TableCell>
                     {player.totalMatches + player.tournLost + player.tournWins}

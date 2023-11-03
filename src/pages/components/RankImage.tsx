@@ -3,12 +3,13 @@ import { FC } from "react";
 import { images } from "../../scripts/rankings-image-variables";
 
 interface RankImageProps {
-  team_rank_title: string | null;
+  team_rank_title: string,
 }
 
 
 
 const RankImage: FC<RankImageProps> = ({ team_rank_title }) => {
+  
   var imgSrc: string = "";
 
   //if-statements filtering for first letter in the team's rank_title

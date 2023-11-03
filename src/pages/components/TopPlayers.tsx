@@ -5,7 +5,6 @@ import Link from 'next/link';
 
 const TopPlayers: FC = () => {
     const players = api.users.getTopUsers.useQuery();
-    console.log(JSON.stringify(players.data));
     return (
         <div className="flex items-center  justify-center border-b-2">
         {players.data?.map((player, idx) => {
