@@ -3,8 +3,8 @@ import { api } from "~/utils/api";
 import { useEffect } from "react";
 import RankImage from "../components/RankImage";
 import Image from "next/image";
-import PlayerHistory from "../components/PlayerHistory";
-import EqMatchListUser from "../components/EqMatchListUser";
+import PlayerHistory from "../components/playerComps/PlayerHistory";
+import EqMatchListUser from "../components/playerComps/EqMatchListUser";
 
 const Player = () => {
   const router = useRouter();

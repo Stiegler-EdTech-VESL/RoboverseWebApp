@@ -1,6 +1,6 @@
-import PlayersList from "../components/PlayersList";
+import PlayersList from "../components/playerComps/PlayersList";
 import { FC } from 'react';
-import TopPlayers from "../components/TopPlayers";
+import TopPlayers from "../components/playerComps/TopPlayers";
 
 const Players : FC = () => {
   return (

@@ -1,10 +1,10 @@
 import { api } from "~/utils/api";
-import TeamsList from "../components/TeamsList";
-import TopTeams from "../components/TopTeams";
+import TeamsList from "../components/teamComps/TeamsList";
+import TopTeams from "../components/teamComps/TopTeams";
 import { useState } from "react";
 import RoboDropdown from "../components/Dropdown";
 import { User } from "@prisma/client";
-import PlayersList from "../components/PlayersList";
+import PlayersList from "../components/playerComps/PlayersList";
 
 export default function TeamsPage() {
   const districts = api.districts.getAllDistricts.useQuery();
