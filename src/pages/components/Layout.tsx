@@ -1,7 +1,7 @@
 import React, { type ReactNode } from "react";
 import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
-import NavigationBar from "./NavigationBar";
+import NavigationBar from "./navbar/NavigationBar";
 import VeslVerseTab from "./VeslVerseTab";
 // import ReactDOM from "react-dom";
 

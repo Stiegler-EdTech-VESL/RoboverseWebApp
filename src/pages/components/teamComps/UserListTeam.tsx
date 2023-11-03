@@ -2,7 +2,7 @@
 import React from "react";
 import { api } from "~/utils/api";
 import Image from "next/image";
-import ProfileNamePic from "./ProfileNamePic";
+import ProfileNamePic from "../playerComps/ProfileNamePic";
 import {
   Table,
   TableHeader,
