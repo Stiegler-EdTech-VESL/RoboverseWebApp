@@ -99,6 +99,7 @@ const PlayersList: FC = () => {
 
               return (
                 <TableRow
+                  key={i}
                   className={i % 2 == 0 ? "bg-zinc-800" : "bg-zinc-950"}
                 >
                   <TableCell className="py-3">{i + 1}</TableCell>
