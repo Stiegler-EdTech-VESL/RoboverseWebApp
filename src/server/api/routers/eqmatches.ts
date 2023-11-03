@@ -21,4 +21,18 @@ export const eqmatchesRouter = createTRPCRouter({
       },
     });
   }),
+
+  getUserEquationMatches: publicProcedure
+  .input(z.object({ userId: z.string() }))
+  .query(async ({ input, ctx }) => {
+    const userInEquationMatches = await ctx.prisma.userInEquationMatch.findMany({
+      where: {
+        userId: input.userId,
+      },
+      include: {
+        EquationMatch: true,
+      },
+    });
+    return userInEquationMatches;
+  }),
 });
