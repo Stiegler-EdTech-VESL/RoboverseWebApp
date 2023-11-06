@@ -5,7 +5,8 @@ import { api } from "~/utils/api";
 import "~/styles/globals.css";
 import Layout from "./components/Layout";
 import { Analytics } from "@vercel/analytics/react";
-
+import { client } from "../ApolloClient/client";
+import { ApolloProvider } from '@apollo/client';
 import { NextUIProvider } from "@nextui-org/react";
 
 const MyApp: AppType<{ session: Session | null }> = ({
@@ -14,13 +15,16 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
+      <ApolloProvider client={client}>
       <NextUIProvider>
         <Layout>
           <Component {...pageProps} />
           <Analytics />
         </Layout>
       </NextUIProvider>
+      </ApolloProvider>
     </SessionProvider>
+
   );
 };
 
