@@ -13,8 +13,6 @@ import { prisma } from "~/server/db";
 import { gql } from "@apollo/client";
 import { client } from "../ApolloClient/client";
 
-
-
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
  * object and keep type safety.
@@ -28,7 +26,6 @@ declare module "next-auth" {
       id: string;
     };
   }
-
 }
 
 /**
@@ -36,7 +33,6 @@ declare module "next-auth" {
  *
  * @see https://next-auth.js.org/configuration/options
  */
-
 
 export const authOptions: NextAuthOptions = {
   callbacks: {
@@ -77,22 +73,46 @@ export const authOptions: NextAuthOptions = {
           const currentUser = await prisma.user.findUnique({
             where: {
               id: user.id,
-            }
-          })
+            },
+          });
           const currentTeam = currentUser?.team_id; //Team ID in the Roboverse DB
-          const realTeam = data.user[0].school_id //School ID in Discord Bot DB
+          const realTeam = data.user[0].school_id; //School ID in Discord Bot DB
+          let isTeaminRobo = true;
+          const teamInRobo = await prisma.team.findUnique({
+            //Does this team exist in Roboverse DB?
+            where: {
+              id: realTeam,
+            },
+          });
+          if (!teamInRobo) {
+            isTeaminRobo = false;
+          }
 
-          if(currentTeam !== realTeam) { //If Team ID and School ID are not equal, update the Team ID in Roboverse DB
-            await prisma.user.update({
-              where: {
-                id: user.id,
-              },
-              data: {
-                team_id: realTeam,
-              }
-            });
-          };
-        };
+          if (currentTeam !== realTeam) {
+            //If Team ID and School ID are not equal, update the Team ID in Roboverse DB
+            if (!isTeaminRobo) {
+              //If the Team does not exist in Roboverse DB, default team_id to Guest
+              await prisma.user.update({
+                where: {
+                  id: user.id,
+                },
+                data: {
+                  team_id: "e968e4fc-80e6-4868-8e83-d6451c2bfcaa",
+                },
+              });
+            } else {
+              await prisma.user.update({
+                //If the Team does exist in Roboverse DB, update user.team_id
+                where: {
+                  id: user.id,
+                },
+                data: {
+                  team_id: realTeam,
+                },
+              });
+            }
+          }
+        }
 
         // Continue with the sign-in process
         return true;
