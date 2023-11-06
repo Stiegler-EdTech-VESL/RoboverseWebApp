@@ -1,7 +1,7 @@
 import { api } from "~/utils/api";
 import Image from "next/image";
 import Link from "next/link";
-import ProfileNamePic from "./ProfileNamePic";
+import ProfileNamePic from "../playerComps/ProfileNamePic";
 
 export default function EqMatchListTeam(props: { teamId: string }) {
   const team = api.teams.getTeamById.useQuery({ id: props.teamId });

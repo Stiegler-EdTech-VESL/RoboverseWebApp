@@ -15,7 +15,7 @@ import {
 export default function NavigationBar(props: any) {
 
   const navPages = [
-    { page: "Teams", comingSoon: false },
+    { page: "Players", comingSoon: false },
     { page: "Play", comingSoon: false },
     { page: "Matches", comingSoon: true },
   ];
