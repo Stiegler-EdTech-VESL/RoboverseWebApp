@@ -57,11 +57,11 @@
       }
 
       var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/Build 32-2.loader.js";
+      var loaderUrl = buildUrl + "/Build 33.loader.js";
       var config = {
-        dataUrl: buildUrl + "/Build 32-2.data.unityweb",
-        frameworkUrl: buildUrl + "/Build 32-2.framework.js.unityweb",
-        codeUrl: buildUrl + "/Build 32-2.wasm.unityweb",
+        dataUrl: buildUrl + "/Build 33.data.unityweb",
+        frameworkUrl: buildUrl + "/Build 33.framework.js.unityweb",
+        codeUrl: buildUrl + "/Build 33.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "Roboverse",
@@ -98,6 +98,7 @@
         canvas.style.height = "600px";
       }
 
+      canvas.style.background = "url('" + buildUrl + "/Build 33.jpg.unityweb') center / cover";
       loadingBar.style.display = "block";
 
       var script = document.createElement("script");
