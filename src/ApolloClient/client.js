@@ -2,7 +2,7 @@ import { ApolloClient, ApolloLink, HttpLink, InMemoryCache } from "@apollo/clien
 
 // Create an http link:
 const httpLink = new HttpLink({
-  uri: "https://vesl-bot-prod.hasura.app/v1/graphql",
+  uri: process.env.GRAPHQL_URI,
 });
 
 // Create a middleware link for headers:
@@ -11,7 +11,7 @@ const middlewareLink = new ApolloLink((operation, forward) => {
   operation.setContext({
     headers: {
       'content-type': 'application/json',
-      'x-hasura-admin-secret': 'aiTGKjvGDfd8sD1GcmUzna6Sep00unKNsLGT6cZPVvpLJH7BlkZJQ2ShEIT91Jog'
+      'x-hasura-admin-secret': process.env.HASURA_ADMIN_SECRET,
     }
   });
   return forward(operation);
