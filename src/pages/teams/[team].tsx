@@ -4,9 +4,9 @@ import { api } from "~/utils/api";
 
 import Image from "next/image";
 
-import UserListTeam from "../components/UserListTeam";
-import EqMatchListTeam from "../components/EqMatchListTeam";
-import TeamHistory from "../components/TeamHistory";
+import UserListTeam from "../components/teamComps/UserListTeam";
+import EqMatchListTeam from "../components/teamComps/EqMatchListTeam";
+import TeamHistory from "../components/teamComps/TeamHistory";
 import RankImage from "../components/RankImage";
 
 export default function TeamPage() {
@@ -18,10 +18,7 @@ export default function TeamPage() {
     teamName = "GhostTeam";
   }
 
- 
-
   const team = api.teams.getTeamByName.useQuery({ name: teamName });
-  const isNotRanked: boolean = team.data?.global_ranking == null;
 
   if (team.data == null) {
     return (
@@ -36,14 +33,16 @@ export default function TeamPage() {
   } else {
     return (
       <>
-        <div className="flex flex-wrap  lg:flex-row justify-between flex-col items-center lg:place-content-evenly py-10">
-        <RankImage team_rank_title={team.data.global_rank_title} />
+        <div className="flex flex-col  flex-wrap items-center justify-between py-10 lg:flex-row lg:place-content-evenly">
+          <RankImage
+            team_rank_title={team.data!.global_rank_title || "Charcoal"}
+          />
           {/* team logo */}
-          <div className="flex flex-row items-center bg-white bg-opacity-20 p-5 rounded-md ">
+          <div className="flex flex-row items-center rounded-md bg-white bg-opacity-20 p-5 ">
             <div className="shrink">
               <Image
                 className="object-contain"
-                alt={team.data.name + "'s Profile Picture"}
+                alt={team.data?.name + "'s Profile Picture"}
                 src={team.data?.logo ?? "/spinner.svg"}
                 width={200}
                 height={200}
@@ -52,52 +51,51 @@ export default function TeamPage() {
             </div>
             {/* team name and stuff */}
             <div className="ml-5">
-              <h1 className="text-2xl text-white font-semibold">{team.data.name}</h1>
+              <h1 className="text-2xl font-semibold text-white">
+                {team.data?.name}
+              </h1>
               <div className="flex flex-row space-x-2">
-                <h2 className="italic font-medium text-slate-500">Global Rating:</h2>
+                <h2 className="font-medium italic text-slate-500">
+                  Global Rating:
+                </h2>
                 <p className="slate-200">
-                  {isNotRanked
-                    ?"Unranked" 
-                    : (
-                      parseFloat(String(team.data?.global_ranking)) * 1000
-                    ).toFixed(0)}
+                  {(
+                    parseFloat(String(team.data?.global_ranking)) * 1000
+                  ).toFixed(0)}
                 </p>
               </div>
               <div className="flex flex-row space-x-2">
-                <h2 className="italic font-medium text-slate-500">District Rating:</h2>
+                <h2 className="font-medium italic text-slate-500">
+                  District Rating:
+                </h2>
                 <p>
-                {isNotRanked
-                    ?"Unranked" 
-                    : (
-                      parseFloat(String(team.data?.district_ranking)) * 1000
-                    ).toFixed(0)}
+                  {(
+                    parseFloat(String(team.data?.district_ranking)) * 1000
+                  ).toFixed(0)}
                 </p>
               </div>
               <div className="flex flex-row space-x-2">
-                <h2 className="italic font-medium text-slate-500">W/L:</h2>
+                <h2 className="font-medium italic text-slate-500">W/L:</h2>
                 <p>
-                  {team.data?.totalEqMatchesWon} / {team.data?.totalEqMatchesLost}
+                  {team.data?.totalEqMatchesWon} /{" "}
+                  {team.data?.totalEqMatchesLost}
                 </p>
               </div>
-              
-              
             </div>
           </div>
 
-
-          <TeamHistory id={team.data.id} />
-
+          <TeamHistory id={team.data?.id!} />
 
           {/* the thing next to the graph with players */}
           <div className="">
-            <UserListTeam teamID={team.data.id} />
+            <UserListTeam teamID={team.data?.id!} />
           </div>
         </div>
 
         {/* second half of the page */}
         <div className="">
           <div className="">
-            <EqMatchListTeam teamId={team.data.id} />
+            <EqMatchListTeam teamId={team.data?.id!} />
           </div>
         </div>
       </>
