@@ -73,6 +73,22 @@ export const teamsRouter = createTRPCRouter({
       return team;
     }),
 
+    getTeamsByIds: publicProcedure
+    .input(z.object({ ids: z.array(z.string()) })) // expects an array of IDs
+    .query(async ({ ctx, input }) => {
+      // Query teams by a list of IDs using Prisma's findMany
+      const teams = await ctx.prisma.team.findMany({
+        where: {
+          id: {
+            in: input.ids, // use the 'in' operator to filter by an array of IDs
+          },
+        },
+      }).catch(() => {
+        return null; // handle any errors
+      });
+      return teams; // return the list of teams
+    }),
+
   getTeamByName: publicProcedure
     .input(z.object({ name: z.string() }))
     .query(async ({ ctx, input }) => {
