@@ -12,10 +12,10 @@ export default function UnityPlayer() {
 
   const { unityProvider, isLoaded, requestFullscreen, sendMessage } =
     useUnityContext({
-      loaderUrl: "/Builds/Build/Build 33.loader.js",
-      dataUrl: "/Builds/Build/Build 33.data.unityweb",
-      frameworkUrl: "/Builds/Build/Build 33.framework.js.unityweb",
-      codeUrl: "/Builds/Build/Build 33.wasm.unityweb",
+      loaderUrl: "/Builds/Build/Build 35.loader.js",
+      dataUrl: "/Builds/Build/Build 35.data.unityweb",
+      frameworkUrl: "/Builds/Build/Build 35.framework.js.unityweb",
+      codeUrl: "/Builds/Build/Build 35.wasm.unityweb",
     });
 
   function handleClickEnterFullscreen() {
