@@ -23,8 +23,14 @@ interface playerData {
   tournLost: number;
   teamId: string | null;
 }
+
+interface teamData {
+  id: string;
+  name: string;
+}
 const PlayersList: FC = () => {
   const [playersState, setPlayersState] = useState<playerData[]>([]);
+  const [teamsList, setTeamsList] = useState<teamData[]>([]);
   const [loading, setLoading] = useState(true);
   const allPlayersData = api.users.getAllUserInfo.useQuery().data; // assuming this is a custom hook for fetching data
   function isNotZero(player: playerData) {
@@ -35,12 +41,16 @@ const PlayersList: FC = () => {
     return Number(rank.globalRank) === 0 && Number(rank.totalMatches === 0);
   }
 
+  //set the stae of playersState when allPlayersData is queried
   useEffect(() => {
     if (allPlayersData) {
       const players = allPlayersData.map((user: User) => {
         return {
           name: user.name,
-          globalRank: user.global_ranking === null ? "0" : ((user.global_ranking as any) * 1000).toFixed(0),
+          globalRank:
+            user.global_ranking === null
+              ? "0"
+              : ((user.global_ranking as any) * 1000).toFixed(0),
           totalWins: user.totalEqMatchesWon,
           totalLost: user.totalEqMatchesLost,
           totalMatches: user.totalEqMatches,
@@ -52,17 +62,29 @@ const PlayersList: FC = () => {
 
       let nonZeroList = players.filter(isNotZero);
       let zeroList = players.filter(isZero);
-    
+
       let sortedPlayers = nonZeroList.concat(zeroList);
       setPlayersState(sortedPlayers);
+    }
+  }, [allPlayersData]);
+
+  const playerTeams = playersState.map((player) => {
+    return player.teamId!;
+  });
+  const teams = api.teams.getTeamsByIds.useQuery({ ids: playerTeams }).data;
+//set the state of TeamList whenever teams is queried
+  useEffect(() => {
+    const teamInfo: teamData[] = teams!?.map((team) => {
+      return {
+        id: team.id,
+        name: team.name,
+      };
+    });
+    if (teamInfo) {
+      setTeamsList(teamInfo);
       setLoading(false);
     }
-  }, [allPlayersData]); 
-
-
-
-
-  
+  }, [teams]);
 
   if (loading) {
     return (
@@ -105,7 +127,7 @@ const PlayersList: FC = () => {
         >
           {playersState.map((player) => {
             let i = playersState.indexOf(player);
-
+            let team = teamsList.find((team) => team.id === player.teamId);
             return (
               <TableRow
                 key={i}
@@ -114,6 +136,7 @@ const PlayersList: FC = () => {
                 <TableCell className="py-3">{i + 1}</TableCell>
                 <TableCell>
                   <Link href={`/players/${player.name}`}>{player.name}</Link>
+                  {team?.name}
                 </TableCell>
                 <TableCell>
                   {player.totalMatches + player.tournLost + player.tournWins}
