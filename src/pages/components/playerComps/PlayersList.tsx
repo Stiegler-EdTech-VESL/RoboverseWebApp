@@ -105,7 +105,7 @@ const PlayersList: FC = () => {
       <Table className=" rounded-md">
         <TableHeader className="">
           <TableColumn className="rounded-tl-md bg-green-500 text-black">
-            Rank
+            Standings
           </TableColumn>
           <TableColumn className="bg-green-500 text-black">Name</TableColumn>
           <TableColumn className="bg-green-500 py-2 text-black">
@@ -135,8 +135,10 @@ const PlayersList: FC = () => {
               >
                 <TableCell className="py-3">{i + 1}</TableCell>
                 <TableCell>
+                  <div className="flex flex-col">
                   <Link href={`/players/${player.name}`}>{player.name}</Link>
-                  {team?.name}
+                  <p className="text-sm">{team?.name}</p>
+                  </div>
                 </TableCell>
                 <TableCell>
                   {player.totalMatches + player.tournLost + player.tournWins}
