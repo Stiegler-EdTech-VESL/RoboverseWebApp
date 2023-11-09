@@ -5,48 +5,77 @@ import {
   DropdownItem,
   Button,
 } from "@nextui-org/react";
+import { FC, Key } from "react";
 
 interface itemProps {
   key: string;
   label: string;
 }
 
-const ConferenceFilter = () => {
+type Props = {
+  conference?: string;
+  onConferenceChange: (newType: string) => void;
+};
+
+const ConferenceFilter: FC<Props> = ({ conference, onConferenceChange }) => {
+  const handleFilterChange = (value: Key) => {
+    onConferenceChange(String(value));
+  };
+
   const items: itemProps[] = [
     {
-      key: "new",
-      label: "New file",
+      key: "All Conferences",
+      label: "All Conferences",
     },
     {
-      key: "copy",
-      label: "Copy link",
+      key: "Charlotte-Meck",
+      label: "Charlotte-Meck",
     },
     {
-      key: "edit",
-      label: "Edit file",
+      key: "Coastal",
+      label: "Coastal",
     },
     {
-      key: "delete",
-      label: "Delete file",
+      key: "Mountains",
+      label: "Mountains",
+    },
+    {
+      key: "Foothills",
+      label: "Foothills",
+    },
+    {
+      key: "Independent",
+      label: "Independent",
+    },
+    {
+      key: "Metrolina",
+      label: "Metrolina",
+    },
+    {
+      key: "Triangle",
+      label: "Triangle",
+    },
+    {
+      key: "Wake",
+      label: "Wake",
     },
   ];
 
   return (
-    <Dropdown className="bg-black border rounded-sm">
+    <Dropdown className="rounded-sm border bg-black">
       <DropdownTrigger>
-        <Button variant="bordered" className="border rounded-sm py-2 px-4">Filter</Button>
+        <Button variant="bordered" className="rounded-sm border px-4 py-2">
+          {conference}
+        </Button>
       </DropdownTrigger>
-      <DropdownMenu variant="faded" aria-label="Dynamic Actions" items={items}>
+      <DropdownMenu
+        variant="faded"
+        aria-label="Dynamic Actions"
+        items={items}
+        onAction={handleFilterChange}
+      >
         {items.map((item) => {
-          return (
-            <DropdownItem
-              key={item.key}
-              color={item.key === "delete" ? "danger" : "default"}
-              className={item.key === "delete" ? "text-danger" : ""}
-            >
-              {item.label}
-            </DropdownItem>
-          );
+          return <DropdownItem key={item.key}>{item.label}</DropdownItem>;
         })}
       </DropdownMenu>
     </Dropdown>
