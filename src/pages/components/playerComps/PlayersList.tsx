@@ -29,12 +29,24 @@ interface playerData {
 interface teamData {
   id: string;
   name: string;
+  conference: string;
 }
-const PlayersList: FC = () => {
+
+  type Props = {
+    conference?: string;
+  };
+
+const PlayersList: FC<Props> = ({conference}) => {
+  const [fullTeamsList, setFullTeamsList] = useState<teamData[]>([]);
+  const [fullPlayersList, setFullPlayersList] = useState<playerData[]>([]);
   const [playersState, setPlayersState] = useState<playerData[]>([]);
   const [teamsList, setTeamsList] = useState<teamData[]>([]);
   const [loading, setLoading] = useState(true);
-  const allPlayersData = api.users.getAllUserInfo.useQuery().data; // assuming this is a custom hook for fetching data
+  const playerTeams = fullPlayersList.map((player) => {
+    return player.teamId!;
+  });
+  const allTeamsData = api.teams.getTeamsByIds.useQuery({ ids: playerTeams }).data;
+  const allPlayersData = api.users.getAllUserInfo.useQuery().data;
   function isNotZero(player: playerData) {
     return Number(player.globalRank) !== 0;
   }
@@ -42,6 +54,8 @@ const PlayersList: FC = () => {
   function isZero(rank: playerData) {
     return Number(rank.globalRank) === 0 && Number(rank.totalMatches === 0);
   }
+
+
 
   //set the stae of playersState when allPlayersData is queried
   useEffect(() => {
@@ -67,27 +81,50 @@ const PlayersList: FC = () => {
       let zeroList = players.filter(isZero);
 
       let sortedPlayers = nonZeroList.concat(zeroList);
+      setFullPlayersList(sortedPlayers);
       setPlayersState(sortedPlayers);
     }
   }, [allPlayersData]);
 
-  const playerTeams = playersState.map((player) => {
-    return player.teamId!;
-  });
-  const teams = api.teams.getTeamsByIds.useQuery({ ids: playerTeams }).data;
+
+
   //set the state of TeamList whenever teams is queried
   useEffect(() => {
-    const teamInfo: teamData[] = teams!?.map((team) => {
+    if(allTeamsData) {
+    const teamInfo: teamData[] = allTeamsData.map((team) => {
       return {
         id: team.id,
         name: team.name,
+        conference: team.District!.name,
       };
     });
+    
     if (teamInfo) {
+      setFullTeamsList(teamInfo);
       setTeamsList(teamInfo);
       setLoading(false);
-    }
-  }, [teams]);
+    }}
+  }, [allTeamsData]);
+
+  useEffect(()=> {
+    if(conference === "All Conferences") {
+      setTeamsList(fullTeamsList);
+      setPlayersState(fullPlayersList);
+    } else {
+    //take full list of teams and filter out depending on what the the value of conference is
+    const filteredTeamsList = fullTeamsList.filter((team) => team.conference === conference );
+    
+    //Go through the ids in the filtered list and find users from full users list that has the ids in the teams list
+    const filteredPlayers = fullPlayersList.filter((el) => {
+      return filteredTeamsList.some((f) => {
+        return f.id === el.teamId;
+      });
+    });
+  
+    
+    setTeamsList(filteredTeamsList);
+    setPlayersState(filteredPlayers);}
+  }, [conference])
 
   if (loading) {
     return (

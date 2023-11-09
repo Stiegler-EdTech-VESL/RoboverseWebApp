@@ -14,7 +14,7 @@ const Players: FC = () => {
           onConferenceChange={setFilterState}
         />
         <TopPlayers />
-        <PlayersList></PlayersList>
+        <PlayersList conference={filterState}></PlayersList>
       </div>
     </div>
   );

@@ -64,7 +64,7 @@ const ConferenceFilter: FC<Props> = ({ conference, onConferenceChange }) => {
   return (
     <Dropdown className="rounded-sm border bg-black">
       <DropdownTrigger>
-        <Button variant="bordered" className="rounded-sm border px-4 py-2">
+        <Button variant="bordered" className="rounded-sm border px-4 py-2 w-[200px] text-sm">
           {conference}
         </Button>
       </DropdownTrigger>
