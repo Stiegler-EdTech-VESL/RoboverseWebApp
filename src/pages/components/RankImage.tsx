@@ -4,9 +4,11 @@ import { images } from "../../scripts/rankings-image-variables";
 
 interface RankImageProps {
   team_rank_title: string;
+  width: number;
+  height: number;
 }
 
-const RankImage: FC<RankImageProps> = ({ team_rank_title }) => {
+const RankImage: FC<RankImageProps> = ({ team_rank_title, width, height }) => {
   const imgSrc = images.ranking[team_rank_title as keyof typeof images.ranking];
 
   if (!imgSrc) {
@@ -17,8 +19,8 @@ const RankImage: FC<RankImageProps> = ({ team_rank_title }) => {
     <Image
       alt="image of player's rank"
       src={imgSrc}
-      width={100}
-      height={100}
+      width={width}
+      height={height}
       quality={100}
     />
   );

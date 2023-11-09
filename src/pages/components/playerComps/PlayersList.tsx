@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { User } from "@prisma/client";
 import { FC, useState, useEffect } from "react";
+import RankImage from "../RankImage";
 
 import {
   Table,
@@ -22,6 +23,7 @@ interface playerData {
   tournWins: number;
   tournLost: number;
   teamId: string | null;
+  rankTitle: string;
 }
 
 interface teamData {
@@ -57,6 +59,7 @@ const PlayersList: FC = () => {
           tournWins: user.total_tourn_wins,
           tournLost: user.total_tourn_lost,
           teamId: user.team_id,
+          rankTitle: user.global_rank_title,
         };
       });
 
@@ -72,7 +75,7 @@ const PlayersList: FC = () => {
     return player.teamId!;
   });
   const teams = api.teams.getTeamsByIds.useQuery({ ids: playerTeams }).data;
-//set the state of TeamList whenever teams is queried
+  //set the state of TeamList whenever teams is queried
   useEffect(() => {
     const teamInfo: teamData[] = teams!?.map((team) => {
       return {
@@ -136,8 +139,8 @@ const PlayersList: FC = () => {
                 <TableCell className="py-3">{i + 1}</TableCell>
                 <TableCell>
                   <div className="flex flex-col">
-                  <Link href={`/players/${player.name}`}>{player.name}</Link>
-                  <p className="text-sm">{team?.name}</p>
+                    <Link href={`/players/${player.name}`}>{player.name}</Link>
+                    <p className="text-sm">{team?.name}</p>
                   </div>
                 </TableCell>
                 <TableCell>
@@ -149,7 +152,20 @@ const PlayersList: FC = () => {
                 <TableCell>
                   {player.tournWins} / {player.tournLost}
                 </TableCell>
-                <TableCell>{player.globalRank}</TableCell>
+                <TableCell>
+                  <div className="flex flex-row items-center justify-between gap-2">
+                    <div className="flex flex-1 justify-center">
+                      {player.globalRank}
+                    </div>
+                    <div className="flex flex-1 justify-center">
+                      <RankImage
+                        team_rank_title={player.rankTitle}
+                        width={50}
+                        height={50}
+                      />
+                    </div>
+                  </div>
+                </TableCell>
               </TableRow>
             );
           })}
