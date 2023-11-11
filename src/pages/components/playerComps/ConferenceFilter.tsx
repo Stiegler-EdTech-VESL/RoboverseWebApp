@@ -75,7 +75,7 @@ const ConferenceFilter: FC<Props> = ({ conference, onConferenceChange }) => {
         onAction={handleFilterChange}
       >
         {items.map((item) => {
-          return <DropdownItem key={item.key}>{item.label}</DropdownItem>;
+          return <DropdownItem className="cursor-pointer" key={item.key}>{item.label}</DropdownItem>;
         })}
       </DropdownMenu>
     </Dropdown>
