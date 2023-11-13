@@ -1,7 +1,7 @@
-import PlayersList from "../components/playerComps/PlayersList";
+import PlayersList from "../../components/playerComps/PlayersList";
 import { FC, useState } from "react";
-import TopPlayers from "../components/playerComps/TopPlayers";
-import ConferenceFilter from "../components/playerComps/ConferenceFilter";
+import TopPlayers from "../../components/playerComps/TopPlayers";
+import ConferenceFilter from "../../components/playerComps/ConferenceFilter";
 
 const Players: FC = () => {
   const [filterState, setFilterState] = useState("All Conferences");

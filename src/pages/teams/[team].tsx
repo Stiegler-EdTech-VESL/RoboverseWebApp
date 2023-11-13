@@ -4,10 +4,10 @@ import { api } from "~/utils/api";
 
 import Image from "next/image";
 
-import UserListTeam from "../components/teamComps/UserListTeam";
-import EqMatchListTeam from "../components/teamComps/EqMatchListTeam";
-import TeamHistory from "../components/teamComps/TeamHistory";
-import RankImage from "../components/RankImage";
+import UserListTeam from "../../components/teamComps/UserListTeam";
+import EqMatchListTeam from "../../components/teamComps/EqMatchListTeam";
+import TeamHistory from "../../components/teamComps/TeamHistory";
+import RankImage from "../../components/RankImage";
 
 export default function TeamPage() {
   const router = useRouter();
