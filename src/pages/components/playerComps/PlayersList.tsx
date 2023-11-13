@@ -1,10 +1,9 @@
 import { api } from "~/utils/api";
 import Image from "next/image";
 import Link from "next/link";
-import { User, Team, District } from "@prisma/client";
-import { FC, useState, useEffect, useCallback } from "react";
+import { FC, useState, useEffect } from "react";
 import RankImage from "../RankImage";
-// import { playerData } from "../../../hooks/fetchUsers";
+
 import {
   Table,
   TableHeader,
@@ -31,8 +30,6 @@ type Props = {
   conference: string;
 };
 
-
-
 const PlayersList: FC<Props> = ({ conference }) => {
   const [playersState, setPlayersState] = useState<playerData[]>([]);
   const [sortedPlayers, setsortedPlayers] = useState<playerData[]>([]);
@@ -40,7 +37,6 @@ const PlayersList: FC<Props> = ({ conference }) => {
   const [loading, setLoading] = useState(true);
 
   const { data, status } = api.users.getAllUserInfo.useQuery();
-
 
   useEffect(() => {
     setLoading(true);
@@ -60,28 +56,31 @@ const PlayersList: FC<Props> = ({ conference }) => {
         };
       });
       const nonZeroList = users.filter((player) => Number(player.rank) !== 0);
+      const someZeroList = users.filter(
+        (player) => Number(player.rank) === 0 && player.totalMatch > 0
+      );
       const zeroList = users.filter(
         (player) => Number(player.rank) === 0 && player.totalMatch === 0
       );
-      const updatedSortedPlayers = nonZeroList.concat(zeroList);
+      const updatedSortedPlayers = nonZeroList
+        .concat(someZeroList)
+        .concat(zeroList);
       setsortedPlayers(updatedSortedPlayers);
       setPlayersState(updatedSortedPlayers);
       setLoading(false);
     }
   }, [status]);
-//hh
 
+  useEffect(() => {
+    setLoading(true);
+    const playersToDisplay =
+      conference === "All Conferences"
+        ? [...sortedPlayers]
+        : sortedPlayers.filter((player) => player.conference === conference);
 
-useEffect(() => {
-  setLoading(true);
-
-  const playersToDisplay = conference === "All Conferences"
-    ? [...sortedPlayers] // Ensure a new array is created
-    : sortedPlayers.filter(player => player.conference === conference);
-
-  setPlayersState(playersToDisplay);
-  setLoading(false);
-}, [conference, sortedPlayers]); 
+    setPlayersState(playersToDisplay);
+    setLoading(false);
+  }, [conference, sortedPlayers]);
 
   if (loading || status === "loading") {
     return (
@@ -99,7 +98,11 @@ useEffect(() => {
     );
   } else {
     return (
-      <Table className=" rounded-md">
+      <Table
+        className=" rounded-md"
+        aria-labelledby="contents"
+        aria-label="table of players"
+      >
         <TableHeader className="">
           <TableColumn className="rounded-tl-md bg-green-500 text-black">
             Standings
