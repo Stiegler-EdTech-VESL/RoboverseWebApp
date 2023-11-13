@@ -49,7 +49,7 @@ export const authOptions: NextAuthOptions = {
       });
     },
 
-    async signIn({ user, account, profile }) {
+    async signIn({ user, profile }) {
       // GraphQL query for the Discord Bot DB
       const GET_USER_QUERY = gql`
         query GetUser($discordId: String!) {
@@ -120,6 +120,13 @@ export const authOptions: NextAuthOptions = {
         console.error("Error fetching user data:", error);
         return false;
       }
+    },
+    async redirect({ url, baseUrl}) {
+      if(url.includes("profile")) {
+        return "/"
+      }
+      console.log("POOOP: ", url);
+      return "/play";
     },
   },
   adapter: PrismaAdapter(prisma),

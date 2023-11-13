@@ -1,10 +1,10 @@
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import { useEffect } from "react";
-import RankImage from "../components/RankImage";
+import RankImage from "../../components/RankImage";
 import Image from "next/image";
-import PlayerHistory from "../components/playerComps/PlayerHistory";
-import EqMatchListUser from "../components/playerComps/EqMatchListUser";
+import PlayerHistory from "../../components/playerComps/PlayerHistory";
+import EqMatchListUser from "../../components/playerComps/EqMatchListUser";
 
 const Player = () => {
   const router = useRouter();
@@ -22,6 +22,10 @@ const Player = () => {
   }
 
   const player = api.users.getUserByName.useQuery({ name: playerName });
+
+  console.log("This is player:", player);
+
+  // const playerAPI = fetch()
 
   return (
     <>

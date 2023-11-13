@@ -1,6 +1,6 @@
 import Image, { StaticImageData } from "next/image";
 import { FC } from "react";
-import { images } from "../../scripts/rankings-image-variables";
+import { images } from "../scripts/rankings-image-variables";
 
 interface RankImageProps {
   team_rank_title: string;
