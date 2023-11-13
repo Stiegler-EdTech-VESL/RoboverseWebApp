@@ -75,7 +75,6 @@ export default function UnityPlayer() {
           {!isLoaded && (
             <div className="absolute flex items-center justify-center">
               <Image
-                // className="align-middle"
                 alt={"Loading..."}
                 width={200}
                 height={200}
@@ -83,9 +82,9 @@ export default function UnityPlayer() {
               ></Image>
             </div>
           )}
-          <div className="flex flex-col">
+          <div className="flex flex-col items-center">
             <Unity
-              className="border-5 mt-5 border-slate-600"
+              className="border-5 my-2 border-slate-600"
               unityProvider={unityProvider}
               style={{
                 // calculation to keep container at a 16:9 ratio
@@ -95,8 +94,8 @@ export default function UnityPlayer() {
               }}
             />
             <div className="flex items-center justify-center">
-              <button
-                className="mt-2 max-w-md rounded-full bg-green-500 px-7 text-2xl text-black"
+            <button
+                className="mt-2 max-w-md rounded-full bg-green-500 px-7 text-2xl text-black hover:border hover:border-green-500 hover:bg-black hover:text-white"
                 onClick={handleClickEnterFullscreen}
               >
                 Full Screen
