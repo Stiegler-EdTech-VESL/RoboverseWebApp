@@ -29,10 +29,10 @@ const Player = () => {
 
   return (
     <>
-      <div className="flex flex-col  flex-wrap items-center justify-between py-10 lg:flex-row lg:place-content-evenly">
-        <RankImage team_rank_title={player.data?.global_rank_title || "Charcoal"} width={100} height={100} />
-        {/* team logo */}
-        <div className="flex flex-row items-center rounded-md bg-white bg-opacity-20 p-5 ">
+      <div className="flex flex-col  flex-wrap items-center justify-between py-10 lg:flex-row lg:place-content-evenly mx-20">
+        
+
+        <div className="flex flex-row items-center rounded-md bg-white bg-opacity-20 p-5 mb-10 w-1/2">
           <div className="shrink">
             <Image
               className="object-contain"
@@ -53,8 +53,7 @@ const Player = () => {
                 Global Rating:
               </h2>
               <p className="slate-200">
-                {parseFloat(String(player.data?.global_ranking as any)) *
-                  (1000 as any).toFixed(0)}
+                {(Number(player.data?.global_ranking)*1000).toFixed(0)}
               </p>
             </div>
             <div className="flex flex-row space-x-2">
@@ -63,6 +62,7 @@ const Player = () => {
                 {player.data?.totalEqMatchesWon} / {player.data?.totalEqMatchesLost}
               </p>
             </div>
+            <RankImage team_rank_title={player.data?.global_rank_title || "Charcoal"} width={50} height={50} />
           </div>
         </div>
 

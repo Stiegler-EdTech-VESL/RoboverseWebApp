@@ -130,12 +130,12 @@ const PlayersList: FC<Props> = ({ conference }) => {
             return (
               <TableRow
                 key={i}
-                className={i % 2 == 0 ? "bg-zinc-800" : "bg-zinc-950"}
+                className={i % 2 == 0 ? "bg-zinc-800 text-2xl" : "bg-zinc-950 text-2xl"}
               >
                 <TableCell className="py-3">{i + 1}</TableCell>
                 <TableCell>
-                  <div className="flex flex-col">
-                    <Link href={`/players/${player.name}`}>{player.name}</Link>
+                  <div className="flex flex-col truncate">
+                    <Link className="hover:text-green-500" href={`/players/${player.name}`}>{player.name}</Link>
                     <p className="text-sm">{player.team}</p>
                   </div>
                 </TableCell>

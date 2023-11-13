@@ -111,17 +111,19 @@ export default function PlayerHistory(props: {
       ],
     };
     const list = userHistory.data;
-    const len = list.length;
+    const filteredList = list.filter((match) => match.ranking !== null);
+    const len = filteredList.length;
+    console.log(userHistory.data);
+    const currentRanking = filteredList[len - 1]?.ranking; // Current ranking
+    const ranking5MatchesAgo = filteredList[len - 5 - 1]?.ranking; // Ranking from 5 matches ago
 
-    const currentRanking = list[len - 1]?.ranking; // Current ranking
-    const ranking5MatchesAgo = list[len - 5 - 1]?.ranking; // Ranking from 5 matches ago
 
     let increased = false;
     if (currentRanking && ranking5MatchesAgo) {
       increased = currentRanking > ranking5MatchesAgo;
     }
 
-    const isNotRanked: boolean = list.length == 0;
+    const isNotRanked: boolean = filteredList.length == 0;
 
     return (
       <div className="flex flex-col px-2">

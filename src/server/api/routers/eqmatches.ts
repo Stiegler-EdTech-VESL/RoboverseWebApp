@@ -32,9 +32,6 @@ export const eqmatchesRouter = createTRPCRouter({
       include: {
         EquationMatch: true,
       },
-      orderBy: {
-      
-      }
     });
     return userInEquationMatches;
   }),

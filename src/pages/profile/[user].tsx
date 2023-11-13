@@ -77,9 +77,9 @@ export default function Profile() {
       
             <Link
               className="rounded-md px-1 text-slate-500 hover:text-green-800 hover:underline"
-              href={"/teams/" + user.data?.Team?.name}
+              href={"/players/" + user.data.name}
             >
-              View My Team
+              View My Page
             </Link>
         </div>
       </div>
