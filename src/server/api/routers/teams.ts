@@ -83,6 +83,9 @@ export const teamsRouter = createTRPCRouter({
             in: input.ids, // use the 'in' operator to filter by an array of IDs
           },
         },
+        include: {
+          District: true,
+        }
       }).catch(() => {
         return null; // handle any errors
       });

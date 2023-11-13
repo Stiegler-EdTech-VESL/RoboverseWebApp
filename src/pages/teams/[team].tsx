@@ -36,6 +36,7 @@ export default function TeamPage() {
         <div className="flex flex-col  flex-wrap items-center justify-between py-10 lg:flex-row lg:place-content-evenly">
           <RankImage
             team_rank_title={team.data!.global_rank_title || "Charcoal"}
+            width={100} height={100}
           />
           {/* team logo */}
           <div className="flex flex-row items-center rounded-md bg-white bg-opacity-20 p-5 ">

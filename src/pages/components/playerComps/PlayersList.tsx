@@ -1,8 +1,8 @@
 import { api } from "~/utils/api";
 import Image from "next/image";
 import Link from "next/link";
-import { User } from "@prisma/client";
 import { FC, useState, useEffect } from "react";
+import RankImage from "../RankImage";
 
 import {
   Table,
@@ -13,80 +13,76 @@ import {
   TableCell,
 } from "@nextui-org/react";
 
-interface playerData {
+export interface playerData {
   name: string;
-  globalRank: string | null;
+  rank: string;
+  rankTitle: string;
+  totalMatch: number;
   totalWins: number;
-  totalLost: number | null;
-  totalMatches: number;
+  totalLost: number;
   tournWins: number;
   tournLost: number;
-  teamId: string | null;
+  team: string;
+  conference: string;
 }
 
-interface teamData {
-  id: string;
-  name: string;
-}
-const PlayersList: FC = () => {
+type Props = {
+  conference: string;
+};
+
+const PlayersList: FC<Props> = ({ conference }) => {
   const [playersState, setPlayersState] = useState<playerData[]>([]);
-  const [teamsList, setTeamsList] = useState<teamData[]>([]);
+  const [sortedPlayers, setsortedPlayers] = useState<playerData[]>([]);
+
   const [loading, setLoading] = useState(true);
-  const allPlayersData = api.users.getAllUserInfo.useQuery().data; // assuming this is a custom hook for fetching data
-  function isNotZero(player: playerData) {
-    return Number(player.globalRank) !== 0;
-  }
 
-  function isZero(rank: playerData) {
-    return Number(rank.globalRank) === 0 && Number(rank.totalMatches === 0);
-  }
+  const { data, status } = api.users.getAllUserInfo.useQuery();
 
-  //set the stae of playersState when allPlayersData is queried
   useEffect(() => {
-    if (allPlayersData) {
-      const players = allPlayersData.map((user: User) => {
+    setLoading(true);
+    if (status === "success") {
+      const users = data.map((i) => {
         return {
-          name: user.name,
-          globalRank:
-            user.global_ranking === null
-              ? "0"
-              : ((user.global_ranking as any) * 1000).toFixed(0),
-          totalWins: user.totalEqMatchesWon,
-          totalLost: user.totalEqMatchesLost,
-          totalMatches: user.totalEqMatches,
-          tournWins: user.total_tourn_wins,
-          tournLost: user.total_tourn_lost,
-          teamId: user.team_id,
+          name: i.name,
+          rank: ((i.global_ranking as any) * 1000).toFixed(0),
+          rankTitle: i.global_rank_title,
+          totalMatch: i.totalEqMatches,
+          totalWins: i.totalEqMatchesWon,
+          totalLost: !i.totalEqMatchesLost ? 0 : i.totalEqMatchesLost,
+          tournWins: i.total_tourn_wins,
+          tournLost: i.total_tourn_lost,
+          team: i.Team?.name ?? "Guests",
+          conference: i.Team?.District?.name ?? "Independent",
         };
       });
-
-      let nonZeroList = players.filter(isNotZero);
-      let zeroList = players.filter(isZero);
-
-      let sortedPlayers = nonZeroList.concat(zeroList);
-      setPlayersState(sortedPlayers);
-    }
-  }, [allPlayersData]);
-
-  const playerTeams = playersState.map((player) => {
-    return player.teamId!;
-  });
-  const teams = api.teams.getTeamsByIds.useQuery({ ids: playerTeams }).data;
-//set the state of TeamList whenever teams is queried
-  useEffect(() => {
-    const teamInfo: teamData[] = teams!?.map((team) => {
-      return {
-        id: team.id,
-        name: team.name,
-      };
-    });
-    if (teamInfo) {
-      setTeamsList(teamInfo);
+      const nonZeroList = users.filter((player) => Number(player.rank) !== 0);
+      const someZeroList = users.filter(
+        (player) => Number(player.rank) === 0 && player.totalMatch > 0
+      );
+      const zeroList = users.filter(
+        (player) => Number(player.rank) === 0 && player.totalMatch === 0
+      );
+      const updatedSortedPlayers = nonZeroList
+        .concat(someZeroList)
+        .concat(zeroList);
+      setsortedPlayers(updatedSortedPlayers);
+      setPlayersState(updatedSortedPlayers);
       setLoading(false);
     }
-  }, [teams]);
+  }, [status]);
 
-  if (loading) {
+  useEffect(() => {
+    setLoading(true);
+    const playersToDisplay =
+      conference === "All Conferences"
+        ? [...sortedPlayers]
+        : sortedPlayers.filter((player) => player.conference === conference);
+
+    setPlayersState(playersToDisplay);
+    setLoading(false);
+  }, [conference, sortedPlayers]);
+
+  if (loading || status === "loading") {
     return (
       <div className=" flex items-center justify-center text-5xl italic">
         <div className="fles flex-col items-center justify-center ">
@@ -102,10 +98,14 @@ const PlayersList: FC = () => {
     );
   } else {
     return (
-      <Table className=" rounded-md">
+      <Table
+        className=" rounded-md"
+        aria-labelledby="contents"
+        aria-label="table of players"
+      >
         <TableHeader className="">
           <TableColumn className="rounded-tl-md bg-green-500 text-black">
-            Rank
+            Standings
           </TableColumn>
           <TableColumn className="bg-green-500 text-black">Name</TableColumn>
           <TableColumn className="bg-green-500 py-2 text-black">
@@ -127,7 +127,6 @@ const PlayersList: FC = () => {
         >
           {playersState.map((player) => {
             let i = playersState.indexOf(player);
-            let team = teamsList.find((team) => team.id === player.teamId);
             return (
               <TableRow
                 key={i}
@@ -135,11 +134,16 @@ const PlayersList: FC = () => {
               >
                 <TableCell className="py-3">{i + 1}</TableCell>
                 <TableCell>
-                  <Link href={`/players/${player.name}`}>{player.name}</Link>
-                  {team?.name}
+                  <div className="flex flex-col">
+                    <Link href={`/players/${player.name}`}>{player.name}</Link>
+                    <p className="text-sm">{player.team}</p>
+                  </div>
                 </TableCell>
                 <TableCell>
-                  {player.totalMatches + player.tournLost + player.tournWins}
+                  {player.totalLost +
+                    player.totalWins +
+                    player.tournLost +
+                    player.tournWins}
                 </TableCell>
                 <TableCell>
                   {player.totalWins} / {player.totalLost}
@@ -147,7 +151,20 @@ const PlayersList: FC = () => {
                 <TableCell>
                   {player.tournWins} / {player.tournLost}
                 </TableCell>
-                <TableCell>{player.globalRank}</TableCell>
+                <TableCell>
+                  <div className="flex flex-row items-center justify-between gap-2">
+                    <div className="flex flex-1 justify-center">
+                      {player.rank}
+                    </div>
+                    <div className="flex flex-1 justify-center">
+                      <RankImage
+                        team_rank_title={player.rankTitle}
+                        width={50}
+                        height={50}
+                      />
+                    </div>
+                  </div>
+                </TableCell>
               </TableRow>
             );
           })}
