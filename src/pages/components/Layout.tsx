@@ -11,7 +11,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
   return (
     <>
 
-      <VeslVerseTab />
+      {/* <VeslVerseTab /> */}
       {sessionData ? <NavigationBar data={sessionData}/> : <Authenticate />}
 
       {sessionData ? children : null}

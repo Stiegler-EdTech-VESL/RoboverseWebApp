@@ -73,10 +73,23 @@ export const usersRouter = createTRPCRouter({
     return users;
   }),
 
-  getAllUserInfo: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.user.findMany({
+  getAllUserInfo: publicProcedure.query(async({ ctx }) => {
+    const data = await ctx.prisma.user.findMany({
+      include: {
+        Team: {
+          select: {
+            name: true,
+            District: {
+              select: {
+                name: true,
+              },
+          },
+      },
+    },
+  },
       orderBy: [{ global_ranking: "desc" }],
     });
+    return data;
   }),
 
   getTopUsers: publicProcedure.query(({ ctx }) => {

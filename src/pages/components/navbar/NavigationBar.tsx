@@ -77,7 +77,7 @@ export default function NavigationBar(props: any) {
                 ? props.data.user.image
                 : "/GhostUser.png"
             }
-            className="max-w-[100px] border-2 border-black hover:border-green-500"
+            className="max-w-[100px] h-auto border-2 border-black hover:border-green-500"
           />
         </Link>
       </NavbarContent>

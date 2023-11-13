@@ -1,8 +1,8 @@
 import { api } from "~/utils/api";
 import Image from "next/image";
 import Link from "next/link";
-import { User } from "@prisma/client";
-import { FC } from "react";
+import { FC, useState, useEffect } from "react";
+import RankImage from "../RankImage";
 
 import {
   Table,
@@ -13,116 +13,164 @@ import {
   TableCell,
 } from "@nextui-org/react";
 
-interface playerData {
+export interface playerData {
   name: string;
-  globalRank: string | null;
+  rank: string;
+  rankTitle: string;
+  totalMatch: number;
   totalWins: number;
-  totalLost: number | null;
-  totalMatches: number;
+  totalLost: number;
   tournWins: number;
   tournLost: number;
+  team: string;
+  conference: string;
 }
 
-const PlayersList: FC = () => {
-  const players = api.users.getAllUserInfo.useQuery();
-  let playersList: playerData[] = [];
-  if (players.data) {
-    playersList = players.data.map((user: User) => {
-      return {
-        name: user.name,
-        globalRank:
-          user.global_ranking === null
-            ? "0"
-            : ((user.global_ranking as any) * 1000).toFixed(0),
-        totalWins: user.totalEqMatchesWon,
-        totalLost: user.totalEqMatchesLost,
-        totalMatches: user.totalEqMatches,
-        tournWins: user.total_tourn_wins,
-        tournLost: user.total_tourn_lost,
-      };
-    });
+type Props = {
+  conference: string;
+};
 
-    function isNotZero(player: playerData) {
-      return Number(player.globalRank) !== 0
-    };
+const PlayersList: FC<Props> = ({ conference }) => {
+  const [playersState, setPlayersState] = useState<playerData[]>([]);
+  const [sortedPlayers, setsortedPlayers] = useState<playerData[]>([]);
 
-    function isZero(rank: playerData) {
-      return Number(rank.globalRank) === 0 && Number(rank.totalMatches === 0)
-    };
+  const [loading, setLoading] = useState(true);
 
-    let nonZeroList = playersList.filter(isNotZero);
-    let zeroList = playersList.filter(isZero);
+  const { data, status } = api.users.getAllUserInfo.useQuery();
 
-    let sortedPlayers = nonZeroList.concat(zeroList);
-
-    if (!players.data) {
-      return (
-        <div className=" flex items-center justify-center text-5xl italic">
-          <div className="fles flex-col items-center justify-center ">
-            <Image
-              className="mt-[50%]"
-              width={200}
-              height={200}
-              alt={"Loading"}
-              src={"/spinner.svg"}
-            ></Image>
-          </div>
-        </div>
+  useEffect(() => {
+    setLoading(true);
+    if (status === "success") {
+      const users = data.map((i) => {
+        return {
+          name: i.name,
+          rank: ((i.global_ranking as any) * 1000).toFixed(0),
+          rankTitle: i.global_rank_title,
+          totalMatch: i.totalEqMatches,
+          totalWins: i.totalEqMatchesWon,
+          totalLost: !i.totalEqMatchesLost ? 0 : i.totalEqMatchesLost,
+          tournWins: i.total_tourn_wins,
+          tournLost: i.total_tourn_lost,
+          team: i.Team?.name ?? "Guests",
+          conference: i.Team?.District?.name ?? "Independent",
+        };
+      });
+      const nonZeroList = users.filter((player) => Number(player.rank) !== 0);
+      const someZeroList = users.filter(
+        (player) => Number(player.rank) === 0 && player.totalMatch > 0
       );
-    } else {
-      return (
-        <Table className=" rounded-md">
-          <TableHeader className="">
-            <TableColumn className="rounded-tl-md bg-green-500 text-black">
-              Rank
-            </TableColumn>
-            <TableColumn className="bg-green-500 text-black">Name</TableColumn>
-            <TableColumn className="bg-green-500 py-2 text-black">
-              Total Matches
-            </TableColumn>
-            <TableColumn className="bg-green-500 text-black">
-              Total W/L
-            </TableColumn>
-            <TableColumn className="bg-green-500 text-black">
-              VESL W/L
-            </TableColumn>
-            <TableColumn className="rounded-tr-md bg-green-500 text-black">
-              Global Rating
-            </TableColumn>
-          </TableHeader>
-          <TableBody
-            className=" rounded-md bg-gray-900"
-            emptyContent={"No rows to display."}
-          >
-            {sortedPlayers.map((player) => {
-              let i = sortedPlayers.indexOf(player);
-
-              return (
-                <TableRow
-                  key={i}
-                  className={i % 2 == 0 ? "bg-zinc-800" : "bg-zinc-950"}
-                >
-                  <TableCell className="py-3">{i + 1}</TableCell>
-                  <TableCell>
-                    <Link href={`/players/${player.name}`}>{player.name}</Link>
-                  </TableCell>
-                  <TableCell>
-                    {player.totalMatches + player.tournLost + player.tournWins}
-                  </TableCell>
-                  <TableCell>
-                    {player.totalWins} / {player.totalLost}
-                  </TableCell>
-                  <TableCell>
-                    {player.tournWins} / {player.tournLost}
-                  </TableCell>
-                  <TableCell>{player.globalRank}</TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
+      const zeroList = users.filter(
+        (player) => Number(player.rank) === 0 && player.totalMatch === 0
       );
+      const updatedSortedPlayers = nonZeroList
+        .concat(someZeroList)
+        .concat(zeroList);
+      setsortedPlayers(updatedSortedPlayers);
+      setPlayersState(updatedSortedPlayers);
+      setLoading(false);
     }
+  }, [status]);
+
+  useEffect(() => {
+    setLoading(true);
+    const playersToDisplay =
+      conference === "All Conferences"
+        ? [...sortedPlayers]
+        : sortedPlayers.filter((player) => player.conference === conference);
+
+    setPlayersState(playersToDisplay);
+    setLoading(false);
+  }, [conference, sortedPlayers]);
+
+  if (loading || status === "loading") {
+    return (
+      <div className=" flex items-center justify-center text-5xl italic">
+        <div className="fles flex-col items-center justify-center ">
+          <Image
+            className="mt-[50%]"
+            width={200}
+            height={200}
+            alt={"Loading"}
+            src={"/spinner.svg"}
+          ></Image>
+        </div>
+      </div>
+    );
+  } else {
+    return (
+      <Table
+        className=" rounded-md"
+        aria-labelledby="contents"
+        aria-label="table of players"
+      >
+        <TableHeader className="">
+          <TableColumn className="rounded-tl-md bg-green-500 text-black">
+            Standings
+          </TableColumn>
+          <TableColumn className="bg-green-500 text-black">Name</TableColumn>
+          <TableColumn className="bg-green-500 py-2 text-black">
+            Total Matches
+          </TableColumn>
+          <TableColumn className="bg-green-500 text-black">
+            Total W/L
+          </TableColumn>
+          <TableColumn className="bg-green-500 text-black">
+            VESL W/L
+          </TableColumn>
+          <TableColumn className="rounded-tr-md bg-green-500 text-black">
+            Global Rating
+          </TableColumn>
+        </TableHeader>
+        <TableBody
+          className=" rounded-md bg-gray-900"
+          emptyContent={"No rows to display."}
+        >
+          {playersState.map((player) => {
+            let i = playersState.indexOf(player);
+            return (
+              <TableRow
+                key={i}
+                className={i % 2 == 0 ? "bg-zinc-800" : "bg-zinc-950"}
+              >
+                <TableCell className="py-3">{i + 1}</TableCell>
+                <TableCell>
+                  <div className="flex flex-col">
+                    <Link href={`/players/${player.name}`}>{player.name}</Link>
+                    <p className="text-sm">{player.team}</p>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  {player.totalLost +
+                    player.totalWins +
+                    player.tournLost +
+                    player.tournWins}
+                </TableCell>
+                <TableCell>
+                  {player.totalWins} / {player.totalLost}
+                </TableCell>
+                <TableCell>
+                  {player.tournWins} / {player.tournLost}
+                </TableCell>
+                <TableCell>
+                  <div className="flex flex-row items-center justify-between gap-2">
+                    <div className="flex flex-1 justify-center">
+                      {player.rank}
+                    </div>
+                    <div className="flex flex-1 justify-center">
+                      <RankImage
+                        team_rank_title={player.rankTitle}
+                        width={50}
+                        height={50}
+                      />
+                    </div>
+                  </div>
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    );
   }
 };
 
