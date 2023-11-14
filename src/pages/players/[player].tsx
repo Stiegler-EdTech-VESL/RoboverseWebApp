@@ -5,6 +5,7 @@ import RankImage from "../../components/RankImage";
 import Image from "next/image";
 import PlayerHistory from "../../components/playerComps/PlayerHistory";
 import EqMatchListUser from "../../components/playerComps/EqMatchListUser";
+import { images } from "../../scripts/rankings-image-variables";
 
 const Player = () => {
   const router = useRouter();
@@ -22,20 +23,21 @@ const Player = () => {
   }
 
   const player = api.users.getUserByName.useQuery({ name: playerName });
+  const rankTitle = images.titles[player.data?.global_rank_title as keyof typeof images.titles];
 
-  console.log("This is player:", player);
 
-  // const playerAPI = fetch()
 
   return (
     <>
-      <div className="flex flex-col  flex-wrap items-center justify-between py-10 lg:flex-row lg:place-content-evenly mx-20">
+      <div className="flex flex-col gap-2 flex-wrap items-center place-content-around py-10 mx-20">
         
-
-        <div className="flex flex-row items-center rounded-md bg-white bg-opacity-20 p-5 mb-10 w-1/2">
-          <div className="shrink">
+      <h1 className="text-4xl font-semibold text-white">
+              {player.data?.name}
+            </h1>
+        <div className="flex flex-row items-center place-content-around rounded-md bg-white bg-opacity-20 p-5 mb-10">
+          <div className="shrink w-1/3">
             <Image
-              className="object-contain"
+              className="object-contain mx-auto"
               alt={player.data?.name + "'s Profile Picture"}
               src={player.data?.image ?? "/spinner.svg"}
               width={200}
@@ -44,29 +46,34 @@ const Player = () => {
             ></Image>
           </div>
           {/* team name and stuff */}
-          <div className="ml-5">
-            <h1 className="text-2xl font-semibold text-white">
-              {player.data?.name}
-            </h1>
-            <div className="flex flex-row space-x-2">
-              <h2 className="font-medium italic text-slate-500">
-                Global Rating:
+          <div className="w-1/3">
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-row gap-2 text-lg w-fit">
+              <h2 className="font-md italic text-slate-500">
+                Ranking:
               </h2>
               <p className="slate-200">
                 {(Number(player.data?.global_ranking)*1000).toFixed(0)}
               </p>
             </div>
-            <div className="flex flex-row space-x-2">
+            <div className="flex flex-row gap-2 text-lg w-fit">
               <h2 className="font-medium italic text-slate-500">W/L:</h2>
               <p>
                 {player.data?.totalEqMatchesWon} / {player.data?.totalEqMatchesLost}
               </p>
             </div>
-            <RankImage team_rank_title={player.data?.global_rank_title || "Charcoal"} width={50} height={50} />
+           <div className="w-1/3">
+            <PlayerHistory id={player.data?.id!} />
+            </div>
+            </div>
+          </div>
+          <div className="w-1/3 flex flex-col gap-2 items-center text-xl">
+            {rankTitle}
+          <RankImage team_rank_title={player.data?.global_rank_title || "Charcoal"} width={100} height={100} />
           </div>
         </div>
-
-        <PlayerHistory id={player.data?.id!} />
+        
+        
         <EqMatchListUser userId={player.data?.id!}></EqMatchListUser>
       </div>
 

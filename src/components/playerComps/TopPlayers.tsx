@@ -57,7 +57,7 @@ const TopPlayers: FC = () => {
               ></Image>
             </div>
             <div className="flex w-full flex-col items-center justify-center truncate">
-              <div className="text-lg font-semibold">
+              <div className="text-lg font-semibold hover:text-green-500">
                 <Link href={`/players/${player.name}`}>{player.name}</Link>
               </div>
 

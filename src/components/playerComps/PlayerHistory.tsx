@@ -124,12 +124,10 @@ export default function PlayerHistory(props: {
     const isNotRanked: boolean = filteredList.length == 0;
 
     return (
-      <div className="flex flex-col px-2">
-        <div className={`flex-none h-[${height}px] w-[${width}px] `}>
+      <div className="flex flex-col w-[500px]">
+        <div className={`flex-none`}>
           <div className="flex flex-col">
-            <h2 className="font-medium italic text-slate-500">Rating</h2>
-
-            <div className=" z-40  flex items-center rounded-full bg-black bg-opacity-10">
+            <div className="flex items-center">
               <svg
                 className={` h-5 w-5${
                   increased ? " fill-green-500" : " fill-red-500"
@@ -153,7 +151,7 @@ export default function PlayerHistory(props: {
             </div>
           </div>
         </div>
-        <div className="max-w-sm">
+        <div className="">
           <Line
             data={dataset}
             height={height}
