@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Unity, useUnityContext } from "react-unity-webgl";
 import { useSession } from "next-auth/react";
-import { useQuery } from "react-query"; 
+import { useQuery } from "react-query";
 
 import Image from "next/image";
 import { api } from "~/utils/api";
@@ -11,32 +11,30 @@ export default function UnityPlayer() {
   const { data: sessionData } = useSession();
   const userID = sessionData?.user?.id || "0";
 
-  const { data: user, isError } = useQuery(['user', userID], () => {
+  const { data: user, isError } = useQuery(["user", userID], () => {
     fetchRoboverseAPI(`players/${userID}`);
-  }
-);
+  });
 
-  useEffect(() => {
-    let isMounted = true;
-  
-    fetchRoboverseAPI(`players/${userID}`)
-      .then(data => {
-        if (isMounted) {
-          console.log(data.id); // Now TypeScript knows that 'id' is a property of 'data'
-          // set your state with the data here
-        }
-      })
-      .catch(error => {
-        if (isMounted) {
-          // handle error here
-        }
-      });
-  
-    return () => {
-      isMounted = false;
-    };
-  }, [userID]);
+  // useEffect(() => {
+  //   let isMounted = true;
 
+  //   fetchRoboverseAPI(`players/${userID}`)
+  //     .then((data) => {
+  //       if (isMounted) {
+  //         console.log(data.id); // Now TypeScript knows that 'id' is a property of 'data'
+  //         // set your state with the data here
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       if (isMounted) {
+  //         // handle error here
+  //       }
+  //     });
+
+  //   return () => {
+  //     isMounted = false;
+  //   };
+  // }, [userID]);
 
   const { unityProvider, isLoaded, requestFullscreen, sendMessage } =
     useUnityContext({
@@ -83,8 +81,6 @@ export default function UnityPlayer() {
     [devicePixelRatio]
   );
 
-  
-
   useEffect(() => {
     if (isLoaded && user) {
       sendMessage(
@@ -93,7 +89,7 @@ export default function UnityPlayer() {
         user.id || "NoData"
       );
     }
-  });
+  }, [isLoaded, user]);
 
   return (
     <>
@@ -121,7 +117,7 @@ export default function UnityPlayer() {
               }}
             />
             <div className="flex items-center justify-center">
-            <button
+              <button
                 className="mt-2 max-w-md rounded-full bg-green-500 px-7 text-2xl text-black hover:border hover:border-green-500 hover:bg-black hover:text-white"
                 onClick={handleClickEnterFullscreen}
               >
