@@ -18,7 +18,6 @@ export default function PlayerHistory(props: {
   w?: number;
   h?: number;
 }) {
-  // Register scales and other elements before using them
   ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -50,16 +49,6 @@ export default function PlayerHistory(props: {
           if (!chartArea) {
             return undefined;
           }
-
-          // const gradient = ctx.createLinearGradient(
-          //   chartArea.left,
-          //   chartArea.top,
-          //   chartArea.right,
-          //   chartArea.bottom
-          // );
-
-          // gradient.addColorStop(0, "rgba(255, 0, 0, 0.5)");
-          // gradient.addColorStop(1, "rgba(0, 255, 0, 0.5)");
 
           const { top, bottom } = chartArea;
 
@@ -95,9 +84,12 @@ export default function PlayerHistory(props: {
     height = props.h;
   }
 
-  const userHistory = api.users.getUserGlobalRankHistory.useQuery({
-    id: props.id,
-  }, {enabled: !!props.id});
+  const userHistory = api.users.getUserGlobalRankHistory.useQuery(
+    {
+      id: props.id,
+    },
+    { enabled: !!props.id }
+  );
 
   if (userHistory.data) {
     const dataset = {
@@ -113,10 +105,16 @@ export default function PlayerHistory(props: {
     const list = userHistory.data;
     const filteredList = list.filter((match) => match.ranking !== null);
     const len = filteredList.length;
-    console.log(userHistory.data);
-    const currentRanking = filteredList[len - 1]?.ranking; // Current ranking
-    const ranking5MatchesAgo = filteredList[len - 5 - 1]?.ranking; // Ranking from 5 matches ago
 
+    let matchDiff = 0;
+    const currentRanking = Number(filteredList[len - 1]?.ranking); // Current ranking
+    if (len < 5) {
+      matchDiff = Number(filteredList[0]?.ranking);
+    } else {
+      matchDiff = Number(filteredList[len - 6]?.ranking);
+    }
+
+    const ranking5MatchesAgo = matchDiff;
 
     let increased = false;
     if (currentRanking && ranking5MatchesAgo) {
@@ -149,8 +147,8 @@ export default function PlayerHistory(props: {
               </svg>
               <div className="text-3xl text-white">
                 {isNotRanked
-                  ? 'No Match History'
-                  : (parseFloat(String(currentRanking)) * 1000).toFixed(0) }
+                  ? "No Match History"
+                  : (currentRanking * 1000).toFixed(0)}
               </div>
             </div>
           </div>

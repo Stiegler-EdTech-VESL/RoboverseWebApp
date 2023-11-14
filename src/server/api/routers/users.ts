@@ -119,7 +119,7 @@ export const usersRouter = createTRPCRouter({
       const ret = matches?.map((match) => {
         return {
           id: match.id,
-          ranking: match.user_global_mu_after,
+          ranking: match.user_global_ranking_after,
           date: match.EquationMatch.ended,
         };
       });
