@@ -1,14 +1,42 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { Unity, useUnityContext } from "react-unity-webgl";
 import { useSession } from "next-auth/react";
+import { useQuery } from "react-query"; 
+
 import Image from "next/image";
 import { api } from "~/utils/api";
+import { fetchRoboverseAPI } from "~/utils/apiConfig";
 
 export default function UnityPlayer() {
   const { data: sessionData } = useSession();
+  const userID = sessionData?.user?.id || "0";
 
-  const userID = sessionData ? sessionData.user.id : "0";
-  const user = api.users.getUserById.useQuery({ id: userID });
+  const { data: user, isError } = useQuery(['user', userID], () => {
+    fetchRoboverseAPI(`players/${userID}`);
+  }
+);
+
+  useEffect(() => {
+    let isMounted = true;
+  
+    fetchRoboverseAPI(`players/${userID}`)
+      .then(data => {
+        if (isMounted) {
+          console.log(data.id); // Now TypeScript knows that 'id' is a property of 'data'
+          // set your state with the data here
+        }
+      })
+      .catch(error => {
+        if (isMounted) {
+          // handle error here
+        }
+      });
+  
+    return () => {
+      isMounted = false;
+    };
+  }, [userID]);
+
 
   const { unityProvider, isLoaded, requestFullscreen, sendMessage } =
     useUnityContext({
@@ -22,10 +50,10 @@ export default function UnityPlayer() {
     requestFullscreen(true);
   }
 
-  const [height, setHeight] = React.useState(window.innerHeight);
-  const [width, setWidth] = React.useState(window.innerWidth);
+  const [height, setHeight] = useState(window.innerHeight);
+  const [width, setWidth] = useState(window.innerWidth);
 
-  React.useEffect(() => {
+  useEffect(() => {
     function handleResize() {
       setHeight(window.innerHeight);
       setWidth(window.innerWidth);
@@ -38,7 +66,7 @@ export default function UnityPlayer() {
     window.devicePixelRatio
   );
 
-  React.useEffect(
+  useEffect(
     function () {
       // update the device pixel ratio of the Unity Application to match the device pixel ratio of the browser.
       const updateDevicePixelRatio = function () {
@@ -55,18 +83,17 @@ export default function UnityPlayer() {
     [devicePixelRatio]
   );
 
-  React.useEffect(() => {
-    if (isLoaded) {
-      handleSendId();
+  
+
+  useEffect(() => {
+    if (isLoaded && user) {
+      sendMessage(
+        "UMRefrenceHolder",
+        "getUserIdFromReact",
+        user.id || "NoData"
+      );
     }
   });
-  function handleSendId() {
-    sendMessage(
-      "UMRefrenceHolder",
-      "getUserIdFromReact",
-      `${user.data ? user.data.id : "NoData"}`
-    );
-  }
 
   return (
     <>

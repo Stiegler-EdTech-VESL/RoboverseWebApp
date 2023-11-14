@@ -23,10 +23,6 @@ const Player = () => {
 
   const player = api.users.getUserByName.useQuery({ name: playerName });
 
-  console.log("This is player:", player);
-
-  // const playerAPI = fetch()
-
   return (
     <>
       <div className="flex flex-col  flex-wrap items-center justify-between py-10 lg:flex-row lg:place-content-evenly">
