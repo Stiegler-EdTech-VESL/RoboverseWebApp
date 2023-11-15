@@ -47,7 +47,7 @@ const Player = () => {
   const { data, status } = api.users.getUserByName.useQuery({
     name: playerName,
   });
-
+  
   useEffect(() => {
     setIsLoading(true);
     if (status === "success" && data) {
