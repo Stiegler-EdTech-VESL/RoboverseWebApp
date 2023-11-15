@@ -27,15 +27,7 @@ const headers = new Headers();
 headers.append('token', `${token}`);
 headers.append('Content-Type', 'application/json');
 
-interface UserData {
-    id: string;
-    // add other user properties here as needed, for example:
-    // name: string;
-    // email: string;
-    // etc.
-}
-
-export const fetchRoboverseAPI = async (endpoint: string, method: string = 'GET'): Promise<UserData> => {
+export const fetchRoboverseAPI = async <T> (endpoint: string, method: string = 'GET'): Promise<T> => {
     try {
         const baseUrl = getApiUrl(endpoint)
         const response = await fetch(baseUrl, {
@@ -49,7 +41,7 @@ export const fetchRoboverseAPI = async (endpoint: string, method: string = 'GET'
             throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`);
         }
 
-        const data: UserData = await response.json();
+        const data = await response.json();
         return data;
 
     } catch (error) {

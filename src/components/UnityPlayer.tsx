@@ -2,39 +2,17 @@ import { useState, useEffect } from "react";
 import { Unity, useUnityContext } from "react-unity-webgl";
 import { useSession } from "next-auth/react";
 import { useQuery } from "react-query";
-
 import Image from "next/image";
-import { api } from "~/utils/api";
 import { fetchRoboverseAPI } from "~/utils/apiConfig";
+import { UserDataID } from "~/types/Players";
 
 export default function UnityPlayer() {
   const { data: sessionData } = useSession();
   const userID = sessionData?.user?.id || "0";
 
   const { data: user, isError } = useQuery(["user", userID], () => {
-    fetchRoboverseAPI(`players/${userID}`);
+    return fetchRoboverseAPI<UserDataID>(`players/${userID}`);
   });
-
-  // useEffect(() => {
-  //   let isMounted = true;
-
-  //   fetchRoboverseAPI(`players/${userID}`)
-  //     .then((data) => {
-  //       if (isMounted) {
-  //         console.log(data.id); // Now TypeScript knows that 'id' is a property of 'data'
-  //         // set your state with the data here
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       if (isMounted) {
-  //         // handle error here
-  //       }
-  //     });
-
-  //   return () => {
-  //     isMounted = false;
-  //   };
-  // }, [userID]);
 
   const { unityProvider, isLoaded, requestFullscreen, sendMessage } =
     useUnityContext({
