@@ -17,12 +17,7 @@ interface GraphProps {
 }
 
 const PlayerGraph: FC<GraphProps> = (matches) => {
-  ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-  );
+  ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement);
 
   const options = {
     responsive: true,
@@ -44,29 +39,25 @@ const PlayerGraph: FC<GraphProps> = (matches) => {
     },
   };
 
-  const poop = matches.matches.map((match: MatchData, index) => {
+  const dataSet = matches.matches.map((match: MatchData, index) => {
     return {
       x: index + 1,
       y: match.ranking,
     };
   });
 
-  console.log("DATASET: ", poop);
-
   const data = {
     labels: [1, 2, 3, 4, 5],
     datasets: [
       {
         label: "Dataset 1",
-        data: poop,
+        data: dataSet,
         borderColor: "#00FD64",
         backgroundColor: "rgba(255, 99, 132, 0.5)",
-        
       },
     ],
   };
 
-  console.log("MATCHES: ", matches);
   return <Line data={data} options={options}></Line>;
 };
 

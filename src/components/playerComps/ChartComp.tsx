@@ -8,20 +8,14 @@ interface Props {
 }
 const ChartComp: FC<Props> = ({ matches, currentRank }) => {
   const pastRank = matches[0]?.ranking;
-  console.log("MATCHES: ", matches);
-
-  console.log("CURRENTRANK: ", currentRank);
 
   const isIncreased = currentRank > pastRank!;
-  console.log("PAST RANK: ", pastRank);
-  console.log("INCREASED? ", isIncreased);
 
   const isFiveMatches = matches.length == 5;
 
-  
   return (
-    <div className="flex flex-col items-center bg-zinc-800 rounded-md p-5">
-      <div className="flex flex-row gap-2 items-center">
+    <div className="flex flex-col items-center rounded-md bg-zinc-800 p-5">
+      <div className="flex flex-row items-center gap-2">
         <svg
           className={` h-5 w-5${
             isIncreased ? " fill-green-500" : " fill-red-500"
@@ -38,10 +32,14 @@ const ChartComp: FC<Props> = ({ matches, currentRank }) => {
           ></path>
         </svg>
         <p className="text-2xl text-white">
-            {isFiveMatches ? (currentRank * 1000).toFixed(0) : 0}
-            </p>
+          {isFiveMatches ? (currentRank * 1000).toFixed(0) : 0}
+        </p>
       </div>
-      {isFiveMatches ? <PlayerGraph matches={matches}></PlayerGraph>: "Need 5 Ranked Matches"}
+      {isFiveMatches ? (
+        <PlayerGraph matches={matches}></PlayerGraph>
+      ) : (
+        "Need 5 Ranked Matches"
+      )}
     </div>
   );
 };
