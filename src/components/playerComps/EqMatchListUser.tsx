@@ -108,7 +108,7 @@ const EqMatchListUser: FC<eqMatchListUserProps> = ({ userId }) => {
           </TableColumn>
           <TableColumn className="w-1/5 bg-green-500 text-black">Score</TableColumn>
           <TableColumn className="w-1/5 bg-green-500 text-black">
-            Rank After
+            Rating After
           </TableColumn>
           <TableColumn className="w-1/5 rounded-tr-md bg-green-500 text-black">
             W/L

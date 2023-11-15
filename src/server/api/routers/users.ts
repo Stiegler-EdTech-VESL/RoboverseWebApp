@@ -20,60 +20,73 @@ export const usersRouter = createTRPCRouter({
   }),
 
   getUserByName: publicProcedure
-  .input(z.object({ name: z.string() }))
-  .query(async ({ input, ctx }) => {
-    const user = await ctx.prisma.user.findUnique({
-      where: {
-        name: input.name,
-      },
-      include: {
-        Team: true,
-        UserInEquationMatch: {
+    .input(z.object({ name: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const user = await ctx.prisma.user
+        .findUnique({
           where: {
-            EquationMatch: {
-              type: "Ranked",
-            },
+            name: input.name,
           },
-          take: 5,
           include: {
-            EquationMatch: true,
-          },
-          orderBy: {
-            EquationMatch: {
-              ended: "desc", // Assuming 'createdAt' is the timestamp field
+            Team: {
+              include: {
+                District: true,
+              },
+            },
+            UserInEquationMatch: {
+              where: {
+                EquationMatch: {
+                  type: "Ranked",
+                },
+              },
+              take: 5,
+              include: {
+                EquationMatch: true,
+              },
+              orderBy: {
+                EquationMatch: {
+                  ended: "desc", // Assuming 'createdAt' is the timestamp field
+                },
+              },
             },
           },
-        },
-      },
-    }).catch(() => {
-      return null; // Handle the case where the user is not found or an error occurs
-    });
+        })
+        .catch(() => {
+          return null; // Handle the case where the user is not found or an error occurs
+        });
 
-    if (!user) {
-      return null; // or handle the user not found case appropriately
-    }
+      if (!user) {
+        return null; // or handle the user not found case appropriately
+      }
 
-    const matches = user.UserInEquationMatch.map((match) => {
-      return {
-        id: match.id,
-        ranking: match.user_global_ranking_after != null ? Number(match.user_global_ranking_after) : 0,
-        date: match.EquationMatch.ended,
+      const matches = user.UserInEquationMatch.map((match) => {
+        return {
+          id: match.id,
+          ranking:
+            match.user_global_ranking_after != null
+              ? Number(match.user_global_ranking_after)
+              : 0,
+          date: match.EquationMatch.ended,
+        };
+      }).reverse();
+
+      const userData = {
+        id: user.id,
+        name: user.name,
+        conference: user.Team!.District!.name,
+        rank: user.global_ranking != null ? Number(user.global_ranking) : 0,
+        rankTitle: user.global_rank_title,
+        totalWon: user.totalEqMatchesWon,
+        totalLost:
+          user.totalEqMatchesLost != null ? Number(user.totalEqMatchesLost) : 0,
+        totalTournW: user.total_tourn_wins,
+        totalTournL: user.total_tourn_lost,
+        image: user.image != null ? user.image : " ",
+        matches: matches,
       };
-    }).reverse();
 
-    const userData = {
-      id: user.id,
-      name: user.name,
-      rank: user.global_ranking != null ? Number(user.global_ranking) : 0,
-      rankTitle: user.global_rank_title,
-      totalWon: user.totalEqMatchesWon,
-      totalLost: user.totalEqMatchesLost != null ? Number(user.totalEqMatchesLost) : 0,
-      image: user.image != null ? user.image : " ",
-      matches: matches,
-    }
-
-    return userData;
-  }),
+      return userData;
+    }),
 
   getUsersByTeamID: publicProcedure
     .input(z.object({ teamId: z.string() }))

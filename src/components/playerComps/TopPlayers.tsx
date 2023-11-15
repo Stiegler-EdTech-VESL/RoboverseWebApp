@@ -56,8 +56,8 @@ const TopPlayers: FC = () => {
                 quality={100}
               ></Image>
             </div>
-            <div className="flex w-full flex-col items-center justify-center truncate">
-              <div className="text-lg font-semibold hover:text-green-500">
+            <div className="flex w-full flex-col items-center justify-center">
+              <div className="text-lg font-semibold hover:text-green-500 w-11/12 truncate">
                 <Link href={`/players/${player.name}`}>{player.name}</Link>
               </div>
 
