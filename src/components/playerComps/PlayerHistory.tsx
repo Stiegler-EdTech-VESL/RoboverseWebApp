@@ -35,6 +35,7 @@ export default function PlayerHistory(props: {
         display: false,
       },
     },
+    
     elements: {
       line: {
         tension: 0,

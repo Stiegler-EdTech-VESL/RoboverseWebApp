@@ -60,9 +60,9 @@ export default function Profile() {
             {user.data.name} ·{" "}
             <Link
               className="hover:underline"
-              href={"/teams/" + user.data.Team?.name}
+              href={"/players/" + user.data.name}
             >
-              {user.data.Team ? user.data.Team.name : "No Team Found"}
+              View My Stats
             </Link>
           </h1>
 
@@ -79,7 +79,7 @@ export default function Profile() {
               className="rounded-md px-1 text-slate-500 hover:text-green-800 hover:underline"
               href={"/players/" + user.data.name}
             >
-              View My Page
+              View My Stats
             </Link>
         </div>
       </div>

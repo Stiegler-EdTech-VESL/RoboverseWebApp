@@ -95,7 +95,7 @@ const EqMatchListUser: FC<eqMatchListUserProps> = ({ userId }) => {
   } else {
     return (
       <Table
-        className="rounded-md mx-20"
+        className="rounded-md"
         aria-labelledby="contents"
         aria-label="table of player's matches"
       >
