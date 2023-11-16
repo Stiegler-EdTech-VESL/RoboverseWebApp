@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState, useMemo } from "react";
 import Image from "next/image";
 import { api } from "~/utils/api";
 import {
@@ -8,7 +8,10 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  Pagination,
+  PaginationItem,
 } from "@nextui-org/react";
+import { ArrowDownLeftIcon, ArrowDownRightIcon } from "@heroicons/react/24/solid";
 
 interface eqMatchListUserProps {
   userId: string;
@@ -35,6 +38,9 @@ const getNewObj = () => {
 };
 
 const EqMatchListUser: FC<eqMatchListUserProps> = ({ userId }) => {
+  const [page, setPage] = useState(1);
+  const rowsPerPage = 10;
+
   const user = api.users.getUserById.useQuery(
     { id: userId },
     { enabled: !!userId }
@@ -44,6 +50,11 @@ const EqMatchListUser: FC<eqMatchListUserProps> = ({ userId }) => {
     { userId: userId },
     { enabled: !!user.data?.id }
   );
+
+  
+
+
+
 
   let matches: matchData[] = [];
 
@@ -78,6 +89,15 @@ const EqMatchListUser: FC<eqMatchListUserProps> = ({ userId }) => {
     }
   });
 
+  const pages = Math.ceil(sortedMatches.length / rowsPerPage);
+
+  const items = useMemo(() => {
+    const start = (page - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+
+    return sortedMatches.slice(start,end);
+  }, [page, sortedMatches])
+
   if (!userEquationMatches.data) {
     return (
       <div className=" flex items-center justify-center text-5xl italic">
@@ -98,7 +118,30 @@ const EqMatchListUser: FC<eqMatchListUserProps> = ({ userId }) => {
         className="rounded-md"
         aria-labelledby="contents"
         aria-label="table of player's matches"
+        bottomContent = {
+          <div className="flex w-full justify-center">
+          <Pagination
+           showControls
+           showShadow
+            loop
+            page={page}
+            total={pages}
+            onChange={(page) => setPage(page)}
+            classNames={{
+              wrapper: "gap-0 overflow-visible h-12 rounded bg-zinc-800",
+              item: "mx-5 text-2xl opacity-50",
+              cursor:
+                "text-white font-bold text-2xl",
+                prev: "text-green-300 text-3xl",
+                next: "text-green-300 text-3xl",
+            }}
+            
+          />
+        </div>
+        }
       >
+
+
         <TableHeader className="">
           <TableColumn className="w-1/5 rounded-tl-md bg-green-500 text-black">
             Date
@@ -106,7 +149,9 @@ const EqMatchListUser: FC<eqMatchListUserProps> = ({ userId }) => {
           <TableColumn className="w-1/5 bg-green-500 py-2 text-black">
             Match Type
           </TableColumn>
-          <TableColumn className="w-1/5 bg-green-500 text-black">Score</TableColumn>
+          <TableColumn className="w-1/5 bg-green-500 text-black">
+            Score
+          </TableColumn>
           <TableColumn className="w-1/5 bg-green-500 text-black">
             Rating After
           </TableColumn>
@@ -117,13 +162,18 @@ const EqMatchListUser: FC<eqMatchListUserProps> = ({ userId }) => {
         <TableBody
           className=" rounded-md bg-gray-900"
           emptyContent={"No rows to display."}
+          items={items}
         >
-          {sortedMatches.map((match) => {
-            let i = sortedMatches.indexOf(match);
+          {items.map((match) => {
+            let i = items.indexOf(match);
             return (
               <TableRow
                 key={match.key}
-                className={i % 2 == 0 ? "bg-zinc-800 text-2xl text-center" : "bg-zinc-950 text-2xl text-center"}
+                className={
+                  i % 2 == 0
+                    ? "bg-zinc-800 text-center text-2xl"
+                    : "bg-zinc-950 text-center text-2xl"
+                }
               >
                 <TableCell>{match.ended?.toDateString()}</TableCell>
                 <TableCell>{match.matchType}</TableCell>
