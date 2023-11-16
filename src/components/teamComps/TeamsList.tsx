@@ -56,7 +56,7 @@ const TeamsList: FC<TeamsListProps> = ({ distID }) => {
         );
   }
 
-  console.log(teamsList);
+
 
   if (!teams.data) {
     return (

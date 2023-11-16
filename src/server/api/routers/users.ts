@@ -22,15 +22,70 @@ export const usersRouter = createTRPCRouter({
   getUserByName: publicProcedure
     .input(z.object({ name: z.string() }))
     .query(async ({ input, ctx }) => {
-      const user = await ctx.prisma.user.findUnique({
-        where: {
-          name: input.name,
-        },
-        include: {
-          Team: true,
-        },
-      });
-      return user;
+      const user = await ctx.prisma.user
+        .findUnique({
+          where: {
+            name: input.name,
+          },
+          include: {
+            Team: {
+              include: {
+                District: true,
+              },
+            },
+            UserInEquationMatch: {
+              where: {
+                EquationMatch: {
+                  type: "Ranked",
+                },
+              },
+              take: 5,
+              include: {
+                EquationMatch: true,
+              },
+              orderBy: {
+                EquationMatch: {
+                  ended: "desc", // Assuming 'createdAt' is the timestamp field
+                },
+              },
+            },
+          },
+        })
+        .catch(() => {
+          return null; // Handle the case where the user is not found or an error occurs
+        });
+
+      if (!user) {
+        return null; // or handle the user not found case appropriately
+      }
+
+      const matches = user.UserInEquationMatch.map((match) => {
+        return {
+          id: match.id,
+          ranking:
+            match.user_global_ranking_after != null
+              ? Number(match.user_global_ranking_after)
+              : 0,
+          date: match.EquationMatch.ended,
+        };
+      }).reverse();
+
+      const userData = {
+        id: user.id,
+        name: user.name,
+        conference: user.Team!.District!.name,
+        rank: user.global_ranking != null ? Number(user.global_ranking) : 0,
+        rankTitle: user.global_rank_title,
+        totalWon: user.totalEqMatchesWon,
+        totalLost:
+          user.totalEqMatchesLost != null ? Number(user.totalEqMatchesLost) : 0,
+        totalTournW: user.total_tourn_wins,
+        totalTournL: user.total_tourn_lost,
+        image: user.image != null ? user.image : " ",
+        matches: matches,
+      };
+
+      return userData;
     }),
 
   getUsersByTeamID: publicProcedure
@@ -73,7 +128,7 @@ export const usersRouter = createTRPCRouter({
     return users;
   }),
 
-  getAllUserInfo: publicProcedure.query(async({ ctx }) => {
+  getAllUserInfo: publicProcedure.query(async ({ ctx }) => {
     const data = await ctx.prisma.user.findMany({
       include: {
         Team: {
@@ -83,10 +138,10 @@ export const usersRouter = createTRPCRouter({
               select: {
                 name: true,
               },
+            },
           },
+        },
       },
-    },
-  },
       orderBy: [{ global_ranking: "desc" }],
     });
     return data;
@@ -119,13 +174,10 @@ export const usersRouter = createTRPCRouter({
       const ret = matches?.map((match) => {
         return {
           id: match.id,
-          ranking: match.user_global_mu_after,
+          ranking: match.user_global_ranking_after,
           date: match.EquationMatch.ended,
         };
       });
       return ret?.slice(0).reverse();
     }),
 });
-
-
-

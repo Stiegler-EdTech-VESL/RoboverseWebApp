@@ -3,8 +3,6 @@ import TeamsList from "../../components/teamComps/TeamsList";
 import TopTeams from "../../components/teamComps/TopTeams";
 import { useState } from "react";
 import RoboDropdown from "../../components/Dropdown";
-import { User } from "@prisma/client";
-import PlayersList from "../../components/playerComps/PlayersList";
 
 export default function TeamsPage() {
   const districts = api.districts.getAllDistricts.useQuery();
@@ -24,7 +22,6 @@ export default function TeamsPage() {
           }
           stateFunction={(input: string) => {
             setSelectedValue(input);
-            console.log(input);
           }}
         ></RoboDropdown>
       </div>
@@ -32,7 +29,7 @@ export default function TeamsPage() {
       <div className="flex items-center justify-center">
         <div className="mx-20 mt-4 flex-grow self-center pb-4 text-center  text-3xl text-slate-300">
           <TeamsList distID={selectedValue} />
-          {/* <PlayersList></PlayersList> */}
+
         </div>
       </div>
     </>

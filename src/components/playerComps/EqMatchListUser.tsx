@@ -77,7 +77,7 @@ const EqMatchListUser: FC<eqMatchListUserProps> = ({ userId }) => {
       return 0;
     }
   });
-  
+
   if (!userEquationMatches.data) {
     return (
       <div className=" flex items-center justify-center text-5xl italic">
@@ -94,19 +94,23 @@ const EqMatchListUser: FC<eqMatchListUserProps> = ({ userId }) => {
     );
   } else {
     return (
-      <Table className=" rounded-md">
+      <Table
+        className="rounded-md"
+        aria-labelledby="contents"
+        aria-label="table of player's matches"
+      >
         <TableHeader className="">
-          <TableColumn className="rounded-tl-md bg-green-500 text-black">
+          <TableColumn className="w-1/5 rounded-tl-md bg-green-500 text-black">
             Date
           </TableColumn>
-          <TableColumn className="bg-green-500 py-2 text-black">
+          <TableColumn className="w-1/5 bg-green-500 py-2 text-black">
             Match Type
           </TableColumn>
-          <TableColumn className="bg-green-500 text-black">Score</TableColumn>
-          <TableColumn className="bg-green-500 text-black">
-            Rank After
+          <TableColumn className="w-1/5 bg-green-500 text-black">Score</TableColumn>
+          <TableColumn className="w-1/5 bg-green-500 text-black">
+            Rating After
           </TableColumn>
-          <TableColumn className="rounded-tr-md bg-green-500 text-black">
+          <TableColumn className="w-1/5 rounded-tr-md bg-green-500 text-black">
             W/L
           </TableColumn>
         </TableHeader>
@@ -119,7 +123,7 @@ const EqMatchListUser: FC<eqMatchListUserProps> = ({ userId }) => {
             return (
               <TableRow
                 key={match.key}
-                className={i % 2 == 0 ? "bg-zinc-800" : "bg-zinc-950"}
+                className={i % 2 == 0 ? "bg-zinc-800 text-2xl text-center" : "bg-zinc-950 text-2xl text-center"}
               >
                 <TableCell>{match.ended?.toDateString()}</TableCell>
                 <TableCell>{match.matchType}</TableCell>

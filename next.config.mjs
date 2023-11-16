@@ -50,6 +50,15 @@ const config = {
       },
     ],
   },
+  async redirects() { //Added this so that users can't ever be on index since it's blank
+    return [
+      {
+        source: "/",
+        destination: "/play",
+        permanent: true
+      }
+    ];
+  }
 };
 
 export default config;
