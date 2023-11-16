@@ -1,31 +1,35 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { Unity, useUnityContext } from "react-unity-webgl";
 import { useSession } from "next-auth/react";
+import { useQuery } from "react-query";
 import Image from "next/image";
-import { api } from "~/utils/api";
+import { fetchRoboverseAPI } from "~/utils/apiConfig";
+import { UserDataID } from "~/types/Players";
 
 export default function UnityPlayer() {
   const { data: sessionData } = useSession();
+  const userID = sessionData?.user?.id || "0";
 
-  const userID = sessionData ? sessionData.user.id : "0";
-  const user = api.users.getUserById.useQuery({ id: userID });
+  const { data: user, isError } = useQuery(["user", userID], () => {
+    return fetchRoboverseAPI<UserDataID>(`players/${userID}`);
+  });
 
   const { unityProvider, isLoaded, requestFullscreen, sendMessage } =
     useUnityContext({
-      loaderUrl: "/Builds/Build/Build 36.loader.js",
-      dataUrl: "/Builds/Build/Build 36.data.unityweb",
-      frameworkUrl: "/Builds/Build/Build 36.framework.js.unityweb",
-      codeUrl: "/Builds/Build/Build 36.wasm.unityweb",
+      loaderUrl: "/Builds/Build/Build 37.loader.js",
+      dataUrl: "/Builds/Build/Build 37.data.unityweb",
+      frameworkUrl: "/Builds/Build/Build 37.framework.js.unityweb",
+      codeUrl: "/Builds/Build/Build 37.wasm.unityweb",
     });
 
   function handleClickEnterFullscreen() {
     requestFullscreen(true);
   }
 
-  const [height, setHeight] = React.useState(window.innerHeight);
-  const [width, setWidth] = React.useState(window.innerWidth);
+  const [height, setHeight] = useState(window.innerHeight);
+  const [width, setWidth] = useState(window.innerWidth);
 
-  React.useEffect(() => {
+  useEffect(() => {
     function handleResize() {
       setHeight(window.innerHeight);
       setWidth(window.innerWidth);
@@ -38,7 +42,7 @@ export default function UnityPlayer() {
     window.devicePixelRatio
   );
 
-  React.useEffect(
+  useEffect(
     function () {
       // update the device pixel ratio of the Unity Application to match the device pixel ratio of the browser.
       const updateDevicePixelRatio = function () {
@@ -55,18 +59,15 @@ export default function UnityPlayer() {
     [devicePixelRatio]
   );
 
-  React.useEffect(() => {
-    if (isLoaded) {
-      handleSendId();
+  useEffect(() => {
+    if (isLoaded && user) {
+      sendMessage(
+        "UMRefrenceHolder",
+        "getUserIdFromReact",
+        user.id || "NoData"
+      );
     }
-  });
-  function handleSendId() {
-    sendMessage(
-      "UMRefrenceHolder",
-      "getUserIdFromReact",
-      `${user.data ? user.data.id : "NoData"}`
-    );
-  }
+  }, [isLoaded, user]);
 
   return (
     <>
@@ -94,7 +95,7 @@ export default function UnityPlayer() {
               }}
             />
             <div className="flex items-center justify-center">
-            <button
+              <button
                 className="mt-2 max-w-md rounded-full bg-green-500 px-7 text-2xl text-black hover:border hover:border-green-500 hover:bg-black hover:text-white"
                 onClick={handleClickEnterFullscreen}
               >

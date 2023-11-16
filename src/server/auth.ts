@@ -125,7 +125,6 @@ export const authOptions: NextAuthOptions = {
       if(url.includes("profile")) {
         return "/"
       }
-      console.log("POOOP: ", url);
       return "/play";
     },
   },
