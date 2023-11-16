@@ -8,9 +8,9 @@ const PROD_API_URL = "https://prod-api.robo.vesl.gg"; // Replace with your produ
 function getBaseUrl(): string {
     // Check if the environment is development or production
     // This assumes you have a way to set 'NODE_ENV' (like using dotenv in Node.js)
-    const isDevelopment = process.env.NODE_ENV === 'development';
+    // const isDevelopment = process.env.NODE_ENV === 'development';
 
-    return isDevelopment ? DEV_API_URL : PROD_API_URL;
+    return DEV_API_URL
 }
 
 // Export a function that returns the full URL for a given endpoint
