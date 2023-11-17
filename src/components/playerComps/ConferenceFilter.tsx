@@ -63,6 +63,7 @@ const ConferenceFilter: FC<Props> = ({ conference, onConferenceChange }) => {
 
   return (
     <div className="my-5">
+      <h2 className="text-md">Filter</h2>
     <Dropdown className="rounded-sm border bg-black">
       <DropdownTrigger>
         <Button variant="bordered" className="rounded-sm border px-4 py-2 w-[200px] text-sm hover:border-green-500 hover:text-green-500">
