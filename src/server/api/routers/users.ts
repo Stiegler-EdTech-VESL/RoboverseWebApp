@@ -2,18 +2,15 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const usersRouter = createTRPCRouter({
-  getLoggedInUser: publicProcedure.query(({ ctx }) => {
+  getLoggedInUser: publicProcedure.query(async ({ ctx }) => {
     if (!ctx.session?.user?.id) {
       return null;
     }
     const userId = ctx.session.user.id;
 
-    const user = ctx.prisma.user.findUnique({
+    const user = await ctx.prisma.user.findUnique({
       where: {
         id: userId,
-      },
-      include: {
-        Team: true,
       },
     });
     return user;
