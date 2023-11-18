@@ -6,12 +6,12 @@ import {
   type DefaultSession,
 } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
-import { DiscordProfile } from "next-auth/providers/discord";
 import { type ReactNode } from "react";
 import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
 import { gql } from "@apollo/client";
 import { client } from "../ApolloClient/client";
+import { User } from "@prisma/client";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -27,6 +27,8 @@ declare module "next-auth" {
     };
   }
 }
+
+let tempDiscordId: string;
 
 /**
  * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
@@ -48,8 +50,43 @@ export const authOptions: NextAuthOptions = {
         },
       });
     },
+    async signIn({ account }) {
+      if (account?.provider === "discord") {
+        // Temporarily store the Discord ID
+        tempDiscordId = account?.providerAccountId;
+      }
 
-    async signIn({ user, profile }) {
+      return true;
+    },
+    async redirect({ url }) {
+      if (url.includes("profile")) {
+        return "/";
+      }
+      return "/play";
+    },
+  },
+  adapter: PrismaAdapter(prisma),
+  providers: [
+    DiscordProvider({
+      clientId: env.DISCORD_CLIENT_ID,
+      clientSecret: env.DISCORD_CLIENT_SECRET,
+    }),
+  ],
+  events: {
+    async createUser({ user }) {
+      try {
+        const discordId = tempDiscordId;
+        if (discordId) {
+          // Update the user record with the Discord ID
+          await prisma.user.update({
+            where: { id: user.id },
+            data: { discord_id: discordId },
+          });
+        }
+      } catch (error) {
+        console.error("Error in createUser event:", error);
+      }
+
       // GraphQL query for the Discord Bot DB
       const GET_USER_QUERY = gql`
         query GetUser($discordId: String!) {
@@ -64,18 +101,13 @@ export const authOptions: NextAuthOptions = {
         const { data } = await client.query({
           query: GET_USER_QUERY,
           variables: {
-            discordId: (profile as DiscordProfile).id,
+            discordId: tempDiscordId,
           },
         });
 
         //If data is returned, find the user in the Roboverse DB
         if (data && data.user.length > 0) {
-          const currentUser = await prisma.user.findUnique({
-            where: {
-              id: user.id,
-            },
-          });
-          const currentTeam = currentUser?.team_id; //Team ID in the Roboverse DB
+          const currentTeam = (user as User).team_id; //Team ID in the Roboverse DB
           const realTeam = data.user[0].school_id; //School ID in Discord Bot DB
           let isTeaminRobo = true;
           const teamInRobo = await prisma.team.findUnique({
@@ -113,28 +145,11 @@ export const authOptions: NextAuthOptions = {
             }
           }
         }
-
-        // Continue with the sign-in process
-        return true;
       } catch (error) {
-        console.error("Error fetching user data:", error);
-        return false;
+        console.error("Error fetching User's team from Bot:", error);
       }
-    },
-    async redirect({ url, baseUrl}) {
-      if(url.includes("profile")) {
-        return "/"
-      }
-      return "/play";
     },
   },
-  adapter: PrismaAdapter(prisma),
-  providers: [
-    DiscordProvider({
-      clientId: env.DISCORD_CLIENT_ID,
-      clientSecret: env.DISCORD_CLIENT_SECRET,
-    }),
-  ],
 };
 
 /**
