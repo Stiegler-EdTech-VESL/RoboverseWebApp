@@ -11,6 +11,7 @@ import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
 import { gql } from "@apollo/client";
 import { client } from "../ApolloClient/client";
+import { User } from "@prisma/client";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -27,7 +28,7 @@ declare module "next-auth" {
   }
 }
 
-let tempDiscordId: string | unknown;
+let tempDiscordId: string;
 
 /**
  * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
@@ -38,8 +39,6 @@ let tempDiscordId: string | unknown;
 export const authOptions: NextAuthOptions = {
   callbacks: {
     session: async ({ session, user }) => {
-      console.log("MY USER", user);
-      console.log("MY LITTLE SESSION",session)
       return Promise.resolve({
         ...session,
         user: {
@@ -52,7 +51,7 @@ export const authOptions: NextAuthOptions = {
       });
     },
     async signIn({ account }) {
-      if (account?.provider === 'discord') {
+      if (account?.provider === "discord") {
         // Temporarily store the Discord ID
         tempDiscordId = account?.providerAccountId;
       }
@@ -60,8 +59,8 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
     async redirect({ url }) {
-      if(url.includes("profile")) {
-        return "/"
+      if (url.includes("profile")) {
+        return "/";
       }
       return "/play";
     },
@@ -102,18 +101,13 @@ export const authOptions: NextAuthOptions = {
         const { data } = await client.query({
           query: GET_USER_QUERY,
           variables: {
-            discordId: user.discord_id,
+            discordId: tempDiscordId,
           },
         });
-        
+
         //If data is returned, find the user in the Roboverse DB
         if (data && data.user.length > 0) {
-          const currentUser = await prisma.user.findUnique({
-            where: {
-              name: user.name,
-            },
-          });
-          const currentTeam = currentUser?.team_id; //Team ID in the Roboverse DB
+          const currentTeam = (user as User).team_id; //Team ID in the Roboverse DB
           const realTeam = data.user[0].school_id; //School ID in Discord Bot DB
           let isTeaminRobo = true;
           const teamInRobo = await prisma.team.findUnique({
@@ -132,7 +126,7 @@ export const authOptions: NextAuthOptions = {
               //If the Team does not exist in Roboverse DB, default team_id to Guest
               await prisma.user.update({
                 where: {
-                  name: user.name,
+                  id: user.id,
                 },
                 data: {
                   team_id: "e968e4fc-80e6-4868-8e83-d6451c2bfcaa",
@@ -142,7 +136,7 @@ export const authOptions: NextAuthOptions = {
               await prisma.user.update({
                 //If the Team does exist in Roboverse DB, update user.team_id
                 where: {
-                  name: user.name,
+                  id: user.id,
                 },
                 data: {
                   team_id: realTeam,
@@ -151,16 +145,12 @@ export const authOptions: NextAuthOptions = {
             }
           }
         }
-
-        // Continue with the sign-in process
-        return true;
       } catch (error) {
-        console.error("Error fetching user data:", error);
-        return false;
+        console.error("Error fetching User's team from Bot:", error);
       }
     },
-  }
-}
+  },
+};
 
 /**
  * Wrapper for `getServerSession` so that you don't need to import the `authOptions` in every file.
