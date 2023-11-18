@@ -17,7 +17,7 @@ export default function NavigationBar(props: any) {
   const navPages = [
     { page: "Players", comingSoon: false },
     { page: "Play", comingSoon: false },
-    { page: "Matches", comingSoon: true },
+    { page: "Stats", comingSoon: false },
   ];
 
   const pathname = usePathname();
@@ -51,7 +51,7 @@ export default function NavigationBar(props: any) {
           return (
             <NavbarItem key={pageIndex}>
               <Navbutton
-                selected={pathname == "/" + page.page.toLowerCase()}
+                selected={pathname == "/" + page.page.toLowerCase() || page.page == "Stats" && pathname == "/players/" + props.data.user.name}
                 page={page.page}
                 comingSoon={page.comingSoon}
               ></Navbutton>
