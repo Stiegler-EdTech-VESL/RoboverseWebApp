@@ -5,6 +5,7 @@ import { api } from "~/utils/api";
 import Image from "next/image";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
+import { Button } from "@nextui-org/react";
 
 export default function Profile() {
   const { data: sessionData } = useSession();
@@ -38,9 +39,9 @@ export default function Profile() {
 
   return (
     <>
-      <div className="mt-10 flex flex-row justify-center">
-        <div className="flex flex-col items-center">
-          <div className="mb-4">
+      
+        <div className="flex flex-col mx-auto items-center mt-10 w-1/2 gap-4">
+          <div className="flex flex-col items-center">
             <Image
               className="rounded-full border-2 border-gray-300"
               alt={user.data.name + "'s Profile Picture"}
@@ -55,34 +56,29 @@ export default function Profile() {
                   : "/Spinner.svg"
               }
             />
+     
+          <h1 className="text-3xl font-bold">{user.data.name}</h1>
           </div>
-          <h1 className="text-3xl font-bold">
-            {user.data.name} ·{" "}
-            <Link
-              className="hover:underline"
-              href={"/players/" + user.data.name}
-            >
-              View My Stats
-            </Link>
-          </h1>
-
+         <div className="flex flex-col items-center w-1/4 gap-2">     
           {sessionData?.user.id === user.data.id ? (
-            <button
-              className="rounded-md px-1 text-slate-500 hover:text-green-800 hover:underline"
+            <Button
+              className="bg-zinc-500 text-md font-semibold rounded-md w-full p-2 h-8 text-white hover:bg-black hover:border hover:border-green-600"
               onClick={() => void signOut()}
             >
               Log Out
-            </button>
+            </Button>
           ) : null}
-      
+          <Button className="bg-zinc-500 text-md font-semibold rounded-md w-full p-2 h-8 text-white hover:bg-black hover:border hover:border-green-600">
             <Link
-              className="rounded-md px-1 text-slate-500 hover:text-green-800 hover:underline"
+              className=""
               href={"/players/" + user.data.name}
             >
               View My Stats
             </Link>
+          </Button>
+          </div>
         </div>
-      </div>
+      
     </>
   );
 }

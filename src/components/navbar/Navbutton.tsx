@@ -8,7 +8,7 @@ export default function Navbutton(props: {
   return (
     <>
       <Link
-        className={` ${
+        className={` hover:text-green-500 ${
           props.selected
             ? "border-b-2 border-green-500 text-slate-300"
             : "bg-transparent text-slate-300"

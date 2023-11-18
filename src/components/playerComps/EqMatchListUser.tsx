@@ -39,7 +39,7 @@ const getNewObj = () => {
 
 const EqMatchListUser: FC<eqMatchListUserProps> = ({ userId }) => {
   const [page, setPage] = useState(1);
-  const rowsPerPage = 10;
+  const rowsPerPage = 8;
 
   const user = api.users.getUserById.useQuery(
     { id: userId },
@@ -121,7 +121,6 @@ const EqMatchListUser: FC<eqMatchListUserProps> = ({ userId }) => {
         bottomContent = {
           <div className="flex w-full justify-center">
           <Pagination
-           showControls
            showShadow
             loop
             page={page}
@@ -131,9 +130,7 @@ const EqMatchListUser: FC<eqMatchListUserProps> = ({ userId }) => {
               wrapper: "gap-0 overflow-visible h-12 rounded bg-zinc-800",
               item: "mx-5 text-2xl opacity-50",
               cursor:
-                "text-white font-bold text-2xl",
-                prev: "text-green-300 text-3xl",
-                next: "text-green-300 text-3xl",
+                "text-green-500 font-bold text-2xl"
             }}
             
           />
