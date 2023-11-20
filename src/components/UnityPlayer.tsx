@@ -1,18 +1,13 @@
 import { useState, useEffect } from "react";
 import { Unity, useUnityContext } from "react-unity-webgl";
 import { useSession } from "next-auth/react";
-import { useQuery } from "react-query";
 import Image from "next/image";
-import { fetchRoboverseAPI } from "~/utils/apiConfig";
-import { UserDataID } from "~/types/Players";
+import { api } from "~/utils/api";
 
 export default function UnityPlayer() {
   const { data: sessionData } = useSession();
-  const userID = sessionData?.user?.id || "0";
-
-  const { data: user, isError } = useQuery(["user", userID], () => {
-    return fetchRoboverseAPI<UserDataID>(`players/${userID}`);
-  });
+  const userID = sessionData ? sessionData.user.id : "0";
+  const user = api.users.getUserById.useQuery({ id: userID });
 
   const { unityProvider, isLoaded, requestFullscreen, sendMessage } =
     useUnityContext({
@@ -64,7 +59,7 @@ export default function UnityPlayer() {
       sendMessage(
         "UMRefrenceHolder",
         "getUserIdFromReact",
-        user.id || "NoData"
+        `${user.data ? user.data.id : "NoData"}`
       );
     }
   }, [isLoaded, user]);
