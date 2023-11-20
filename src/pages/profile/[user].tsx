@@ -62,13 +62,13 @@ export default function Profile() {
          <div className="flex flex-col items-center w-1/4 gap-2">     
           {sessionData?.user.id === user.data.id ? (
             <Button
-              className="bg-zinc-500 text-md font-semibold rounded-md w-full p-2 h-8 text-white hover:bg-black hover:border hover:border-green-600"
+              className="bg-zinc-500 text-md font-semibold rounded-md w-full h-8 text-white hover:bg-black hover:border hover:border-green-600"
               onClick={() => void signOut()}
             >
               Log Out
             </Button>
           ) : null}
-          <Button className="bg-zinc-500 text-md font-semibold rounded-md w-full p-2 h-8 text-white hover:bg-black hover:border hover:border-green-600">
+          <Button className="bg-zinc-500 text-md font-semibold rounded-md w-full h-8 text-white hover:bg-black hover:border hover:border-green-600">
             <Link
               className=""
               href={"/players/" + user.data.name}
