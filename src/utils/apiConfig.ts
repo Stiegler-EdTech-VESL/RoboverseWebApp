@@ -1,16 +1,8 @@
-// apiConfig.ts
-
-// Define your API URLs here
-const DEV_API_URL = "https://dev-api.robo.vesl.gg"; // Replace with your development API URL
-const PROD_API_URL = "https://prod-api.robo.vesl.gg"; // Replace with your production API URL
+import { env } from "~/env.mjs";
 
 // Function to determine the base URL based on the environment
-function getBaseUrl(): string {
-    // Check if the environment is development or production
-    // This assumes you have a way to set 'NODE_ENV' (like using dotenv in Node.js)
-    // const isDevelopment = process.env.NODE_ENV === 'development';
-
-    return DEV_API_URL
+function getBaseUrl(): string | undefined {
+    return env.API_URL;
 }
 
 // Export a function that returns the full URL for a given endpoint
@@ -20,7 +12,7 @@ export function getApiUrl(endpoint: string): string {
 }
 
 // Your token
-const token = '78ec520f-2d5c-4349-aa38-5406ecb2f2ca';
+const token = env.API_TOKEN;
 
 // Setting up headers
 const headers = new Headers();
