@@ -9,19 +9,11 @@ export const teamsRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       if (input.districtId === "Global") {
         return await ctx.prisma.team.findMany({
-          where: {
-            global_ranking: {
-              not: null,
-            },
-          },
           orderBy: { global_ranking: "desc" },
         });
       } else {
         return await ctx.prisma.team.findMany({
           where: {
-            district_ranking: {
-              not: null,
-            },
             districtId: input.districtId,
           },
           orderBy: { district_ranking: "desc" },
@@ -81,6 +73,27 @@ export const teamsRouter = createTRPCRouter({
       return team;
     }),
 
+  getTeamsByIds: publicProcedure
+    .input(z.object({ ids: z.array(z.string()) })) // expects an array of IDs
+    .query(async ({ ctx, input }) => {
+      // Query teams by a list of IDs using Prisma's findMany
+      const teams = await ctx.prisma.team
+        .findMany({
+          where: {
+            id: {
+              in: input.ids, // use the 'in' operator to filter by an array of IDs
+            },
+          },
+          include: {
+            District: true,
+          },
+        })
+        .catch(() => {
+          return null; // handle any errors
+        });
+      return teams; // return the list of teams
+    }),
+
   getTeamByName: publicProcedure
     .input(z.object({ name: z.string() }))
     .query(async ({ ctx, input }) => {
@@ -121,9 +134,7 @@ export const teamsRouter = createTRPCRouter({
           return null;
         });
 
-      // console.log(""matches);
       const ret = matches?.map((match) => {
-        // console.log(match);
         return {
           id: match.id,
           ranking: match.global_ranking_after,

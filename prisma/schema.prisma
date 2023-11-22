@@ -57,6 +57,7 @@ model Equation {
   Team                Team?                 @relation(fields: [team_id], references: [id], onDelete: Restrict, onUpdate: Restrict)
   User                User?                 @relation(fields: [user_id], references: [id], onDelete: Restrict, onUpdate: Restrict)
   TeamInEquationMatch TeamInEquationMatch[]
+  UserInEquationMatch UserInEquationMatch[]
 }
 
 model EquationMatch {
@@ -67,6 +68,7 @@ model EquationMatch {
   started             DateTime?             @db.Timestamp(6)
   status              MatchStatus           @default(PENDING)
   TeamInEquationMatch TeamInEquationMatch[]
+  UserInEquationMatch UserInEquationMatch[]
 }
 
 model Job {
@@ -154,21 +156,33 @@ model District {
 }
 
 model User {
-  id              String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name            String     @unique @db.VarChar(255)
-  epic_id         String?    @unique @db.VarChar(255)
-  email           String?    @unique
-  image           String?
-  team_id         String?    @default(dbgenerated("'e968e4fc-80e6-4868-8e83-d6451c2bfcaa'::uuid")) @db.Uuid
-  emailVerified   DateTime?
-  discord_id      String     @default(dbgenerated("('@'::text || (name)::text)")) @db.VarChar(255)
-  perm_id         String?    @db.Uuid
-  progression_lvl Int        @default(0)
-  Account         Account[]
-  Equation        Equation[]
-  Session         Session[]
-  Perm            Perms?     @relation(fields: [perm_id], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  Team            Team?      @relation(fields: [team_id], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  id                  String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                String                @unique @db.VarChar(255)
+  epic_id             String?               @unique @db.VarChar(255)
+  email               String?               @unique
+  image               String?
+  team_id             String?               @default(dbgenerated("'e968e4fc-80e6-4868-8e83-d6451c2bfcaa'::uuid")) @db.Uuid
+  emailVerified       DateTime?
+  discord_id          String?               @unique
+  perm_id             String?               @db.Uuid
+  progression_lvl     Int                   @default(0)
+  global_mu           Decimal               @default(25) @db.Decimal
+  global_sigma        Decimal               @default(8.3333333333) @db.Decimal
+  global_ranking      Decimal               @default(0) @db.Decimal
+  global_rank_title   String                @default("Charcoal")
+  totalEqMatches      Int                   @default(0)
+  totalEqMatchesWon   Int                   @default(0)
+  totalEqMatchesLost  Int?                  @default(0)
+  current_eq_id       String?               @db.Uuid
+  total_tourn_wins    Int                   @default(0)
+  total_tourn_lost    Int                   @default(0)
+  createdAt           DateTime              @default(now())
+  Account             Account[]
+  Equation            Equation[]
+  Session             Session[]
+  Perm                Perms?                @relation(fields: [perm_id], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  Team                Team?                 @relation(fields: [team_id], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  UserInEquationMatch UserInEquationMatch[]
 }
 
 model VerificationToken {
@@ -177,6 +191,24 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model UserInEquationMatch {
+  equationMatchId           String        @db.Uuid
+  userId                    String        @db.Uuid
+  score                     Int?          @default(0)
+  equationID                String?       @db.Uuid
+  winner                    Boolean?      @default(false)
+  id                        String        @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_global_mu_after      Decimal?      @db.Decimal
+  user_global_mu_before     Decimal?      @db.Decimal
+  user_global_sigma_after   Decimal?      @db.Decimal
+  user_global_sigma_before  Decimal?      @db.Decimal
+  user_global_ranking_after Decimal?      @db.Decimal
+  Equation                  Equation?     @relation(fields: [equationID], references: [id])
+  EquationMatch             EquationMatch @relation(fields: [equationMatchId], references: [id])
+  User                      User          @relation(fields: [userId], references: [id])
 }
 
 enum ApiAccess {

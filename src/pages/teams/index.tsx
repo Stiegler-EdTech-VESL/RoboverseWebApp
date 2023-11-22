@@ -1,12 +1,11 @@
 import { api } from "~/utils/api";
-import TeamsList from "../components/TeamsList";
-import TopTeams from "../components/TopTeams";
+import TeamsList from "../../components/teamComps/TeamsList";
+import TopTeams from "../../components/teamComps/TopTeams";
 import { useState } from "react";
-import RoboDropdown from "../components/Dropdown";
+import RoboDropdown from "../../components/Dropdown";
 
 export default function TeamsPage() {
   const districts = api.districts.getAllDistricts.useQuery();
-
   const [selectedValue, setSelectedValue] = useState("Global");
 
   return (
@@ -23,7 +22,6 @@ export default function TeamsPage() {
           }
           stateFunction={(input: string) => {
             setSelectedValue(input);
-            console.log(input);
           }}
         ></RoboDropdown>
       </div>
@@ -31,6 +29,7 @@ export default function TeamsPage() {
       <div className="flex items-center justify-center">
         <div className="mx-20 mt-4 flex-grow self-center pb-4 text-center  text-3xl text-slate-300">
           <TeamsList distID={selectedValue} />
+
         </div>
       </div>
     </>
