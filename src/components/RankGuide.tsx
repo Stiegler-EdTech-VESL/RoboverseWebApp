@@ -97,6 +97,26 @@ const RankGuide: FC<ModalProps> = ({ isModalOpen, onModalChange }) => {
             </div>
             <div className="flex flex-row justify-center">
               <RankImage
+                team_rank_title="Silicon_1"
+                width={50}
+                height={50}
+              ></RankImage>
+              <RankImage
+                team_rank_title="Silicon_2"
+                width={50}
+                height={50}
+              ></RankImage>
+              <RankImage
+                team_rank_title="Silicon_3"
+                width={50}
+                height={50}
+              ></RankImage>
+            </div>
+            <div className="flex flex-row items-center text-xl text-black">
+              Silicon 1-3
+            </div>
+            <div className="flex flex-row justify-center">
+              <RankImage
                 team_rank_title="Diamond_1"
                 width={50}
                 height={50}
@@ -154,26 +174,6 @@ const RankGuide: FC<ModalProps> = ({ isModalOpen, onModalChange }) => {
             </div>
             <div className="flex flex-row items-center text-xl text-black">
               Grand Champion 1-3
-            </div>
-            <div className="flex flex-row justify-center">
-              <RankImage
-                team_rank_title="Silicon_1"
-                width={50}
-                height={50}
-              ></RankImage>
-              <RankImage
-                team_rank_title="Silicon_2"
-                width={50}
-                height={50}
-              ></RankImage>
-              <RankImage
-                team_rank_title="Silicon_3"
-                width={50}
-                height={50}
-              ></RankImage>
-            </div>
-            <div className="flex flex-row items-center text-xl text-black">
-              Silicon 1-3
             </div>
             <div className="place-self-center">
               <RankImage
