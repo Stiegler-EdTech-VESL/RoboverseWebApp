@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FC, useState, useEffect } from "react";
 import RankImage from "../RankImage";
+import { QuestionMarkCircleIcon } from "@heroicons/react/24/solid";
 
 import {
   Table,
@@ -28,9 +29,14 @@ export interface playerData {
 
 type Props = {
   conference: string;
+  onModalChange: (newType: boolean) => void;
 };
 
-const PlayersList: FC<Props> = ({ conference }) => {
+const PlayersList: FC<Props> = ({ conference, onModalChange }) => {
+  const handleModalChange = () => {
+    onModalChange(true);
+  };
+
   const [playersState, setPlayersState] = useState<playerData[]>([]);
   const [sortedPlayers, setsortedPlayers] = useState<playerData[]>([]);
 
@@ -118,7 +124,13 @@ const PlayersList: FC<Props> = ({ conference }) => {
             VESL W/L
           </TableColumn>
           <TableColumn className="rounded-tr-md bg-green-500 text-black">
-            Global Rating
+            <div className="flex flex-row justify-center gap-2">
+              Global Rating{" "}
+              <QuestionMarkCircleIcon
+                className="w-6 hover:cursor-pointer hover:border hover:border-transparent"
+                onClick={handleModalChange}
+              ></QuestionMarkCircleIcon>
+            </div>
           </TableColumn>
         </TableHeader>
         <TableBody
@@ -130,12 +142,19 @@ const PlayersList: FC<Props> = ({ conference }) => {
             return (
               <TableRow
                 key={i}
-                className={i % 2 == 0 ? "bg-zinc-800 text-2xl" : "bg-zinc-950 text-2xl"}
+                className={
+                  i % 2 == 0 ? "bg-zinc-800 text-2xl" : "bg-zinc-950 text-2xl"
+                }
               >
                 <TableCell className="py-3">{i + 1}</TableCell>
                 <TableCell>
                   <div className="flex flex-col truncate">
-                    <Link className="hover:text-green-500" href={`/players/${player.name}`}>{player.name}</Link>
+                    <Link
+                      className="hover:text-green-500"
+                      href={`/players/${player.name}`}
+                    >
+                      {player.name}
+                    </Link>
                     <p className="text-sm">{player.team}</p>
                   </div>
                 </TableCell>
@@ -152,7 +171,7 @@ const PlayersList: FC<Props> = ({ conference }) => {
                   {player.tournWins} / {player.tournLost}
                 </TableCell>
                 <TableCell>
-                  <div className="flex flex-row items-center justify-between gap-2">
+                  <div className="flex flex-row items-center">
                     <div className="flex flex-1 justify-center">
                       {player.rank}
                     </div>
