@@ -159,10 +159,7 @@ const PlayersList: FC<Props> = ({ conference, onModalChange }) => {
                   </div>
                 </TableCell>
                 <TableCell>
-                  {player.totalLost +
-                    player.totalWins +
-                    player.tournLost +
-                    player.tournWins}
+                  {player.totalMatch}
                 </TableCell>
                 <TableCell>
                   {player.totalWins} / {player.totalLost}
