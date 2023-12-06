@@ -1,4 +1,4 @@
-import Image, { StaticImageData } from "next/image";
+import Image from "next/image";
 import { FC } from "react";
 import { images } from "../scripts/rankings-image-variables";
 
