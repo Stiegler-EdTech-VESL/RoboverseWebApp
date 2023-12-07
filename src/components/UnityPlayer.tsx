@@ -7,7 +7,7 @@ import { api } from "~/utils/api";
 export default function UnityPlayer() {
   const { data: sessionData } = useSession();
   const userID = sessionData ? sessionData.user.id : "0";
-  const user = api.users.getUserById.useQuery({ id: userID });
+  // const user = api.users.getUserById.useQuery({ id: userID });
 
   const { unityProvider, isLoaded, requestFullscreen, sendMessage } =
     useUnityContext({
@@ -55,14 +55,14 @@ export default function UnityPlayer() {
   );
 
   useEffect(() => {
-    if (isLoaded && user) {
+    if (isLoaded && userID) {
       sendMessage(
         "UMRefrenceHolder",
         "getUserIdFromReact",
-        `${user.data ? user.data.id : "NoData"}`
+        `${userID ? userID : "NoData"}`
       );
     }
-  }, [isLoaded, user]);
+  }, [isLoaded, userID]);
 
   return (
     <>

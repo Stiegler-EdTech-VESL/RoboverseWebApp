@@ -107,10 +107,9 @@ export const usersRouter = createTRPCRouter({
         where: {
           id: input.id,
         },
-        include: {
-          Team: true,
-          UserInEquationMatch: true,
-        },
+        select: {
+          id: true,
+        }
       });
       return user;
     }),
