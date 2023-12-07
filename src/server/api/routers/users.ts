@@ -24,7 +24,16 @@ export const usersRouter = createTRPCRouter({
           where: {
             name: input.name,
           },
-          include: {
+          select: {
+            id: true,
+            name: true,
+            global_ranking: true,
+            global_rank_title: true,
+            totalEqMatchesWon: true,
+            totalEqMatchesLost: true,
+            image: true,
+            total_tourn_wins: true,
+            total_tourn_lost: true,
             Team: {
               include: {
                 District: true,
@@ -46,7 +55,7 @@ export const usersRouter = createTRPCRouter({
                 },
               },
             },
-          },
+          }
         })
         .catch(() => {
           return null; // Handle the case where the user is not found or an error occurs
@@ -126,17 +135,25 @@ export const usersRouter = createTRPCRouter({
 
   getAllUserInfo: publicProcedure.query(async ({ ctx }) => {
     const data = await ctx.prisma.user.findMany({
-      include: {
+      select: {
+        name: true,
+        global_ranking: true,
+        global_rank_title: true,
+        totalEqMatches: true,
+        totalEqMatchesWon: true,
+        totalEqMatchesLost: true,
+        total_tourn_wins: true,
+        total_tourn_lost: true,
         Team: {
           select: {
             name: true,
             District: {
               select: {
                 name: true,
-              },
-            },
-          },
-        },
+              }
+            }
+          }
+        }
       },
       orderBy: [{ global_ranking: "desc" }],
     });
@@ -144,10 +161,16 @@ export const usersRouter = createTRPCRouter({
   }),
 
   getTopUsers: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.user.findMany({
+    const data = ctx.prisma.user.findMany({
+      select: {
+        name: true,
+        image: true,
+        global_ranking: true
+      },
       orderBy: [{ global_ranking: "desc" }],
       take: 3,
     });
+    return data
   }),
 
   getUserGlobalRankHistory: publicProcedure
