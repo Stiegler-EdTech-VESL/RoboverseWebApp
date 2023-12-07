@@ -34,7 +34,7 @@ const TopPlayers: FC = () => {
         return (
           <div
             className={`mb-3  ${container} flex h-80 w-64 flex-col gap-2 items-center px-5`}
-            key={player.id}
+            key={idx}
           >
             <div className="flex justify-center">
               <div
