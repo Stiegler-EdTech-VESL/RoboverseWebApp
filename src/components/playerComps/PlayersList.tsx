@@ -57,8 +57,8 @@ const PlayersList: FC<Props> = ({ conference, onModalChange }) => {
           totalLost: !i.totalEqMatchesLost ? 0 : i.totalEqMatchesLost,
           tournWins: i.total_tourn_wins,
           tournLost: i.total_tourn_lost,
-          team: i.Team?.name ?? "Guests",
-          conference: i.Team?.District?.name ?? "Independent",
+          team: i.Team!.name,
+          conference: i.Team!.District!.name,
         };
       });
       const nonZeroList = users.filter((player) => Number(player.rank) !== 0);
@@ -158,9 +158,7 @@ const PlayersList: FC<Props> = ({ conference, onModalChange }) => {
                     <p className="text-sm">{player.team}</p>
                   </div>
                 </TableCell>
-                <TableCell>
-                  {player.totalMatch}
-                </TableCell>
+                <TableCell>{player.totalMatch}</TableCell>
                 <TableCell>
                   {player.totalWins} / {player.totalLost}
                 </TableCell>

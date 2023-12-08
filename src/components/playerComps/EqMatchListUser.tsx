@@ -41,14 +41,9 @@ const EqMatchListUser: FC<eqMatchListUserProps> = ({ userId }) => {
   const [page, setPage] = useState(1);
   const rowsPerPage = 8;
 
-  const user = api.users.getUserById.useQuery(
-    { id: userId },
-    { enabled: !!userId }
-  );
 
   const userEquationMatches = api.eqMatches.getUserEquationMatches.useQuery(
-    { userId: userId },
-    { enabled: !!user.data?.id }
+    { userId: userId }
   );
 
   
